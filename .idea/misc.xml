@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/drawable-xxhdpi/toolbar.xml" value="0.169" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/drawable/button_bg.xml" value="0.169" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/drawable/button_default.xml" value="0.169" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/drawable/dividers.xml" value="0.169" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.169" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/drawable/selector_option_button_bg.xml" value="0.169" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/layout/activity_details_screen.xml" value="0.12273550724637682" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/layout/activity_feed_screen.xml" value="0.12273550724637682" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/layout/activity_main.xml" value="0.12273550724637682" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/layout/activity_twitter_authentication.xml" value="0.12273550724637682" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/layout/authenticate_webview.xml" value="0.12273550724637682" />
+        <entry key="..\:/New folder/Bridgetlinx/TwitterClone/app/src/main/res/layout/custom_layout.xml" value="0.12273550724637682" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
