@@ -102,7 +102,6 @@ public class TwitterAuthenticationActivity extends Activity {
             setResult(RESULT_OK, resultIntent);
             finish();
             return true;
-
         }
     }
 }

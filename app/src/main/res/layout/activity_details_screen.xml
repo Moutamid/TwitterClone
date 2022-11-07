@@ -94,7 +94,6 @@
             android:layout_height="300dp"
             android:layout_below="@+id/cardview"
             android:scaleType="centerCrop"
-            android:visibility="gone"
             android:src="@drawable/profile" />
 
 

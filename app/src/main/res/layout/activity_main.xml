@@ -28,7 +28,7 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <RelativeLayout
+    <RelativeLayout>
         android:id="@+id/tweet_layout"
         style="@style/layoutstyle"
         android:layout_width="match_parent"
@@ -70,9 +70,9 @@
             android:padding="10dp"
             android:textColor="#000000" />
 
-    </RelativeLayout>-->
+    </RelativeLayout> -->
 
-    M<RelativeLayout
+    <RelativeLayout
         android:id="@+id/twitter_login_layout"
         style="@style/layoutstyle"
         android:layout_width="match_parent"

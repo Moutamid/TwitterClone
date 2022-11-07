@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.StrictMode;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -53,17 +55,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        // finally initialize twitter with created configs
+        Twitter.initialize(this);
+        setContentView(R.layout.activity_main);
+
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))//enable logging when app is in debug mode
                 .twitterAuthConfig(new TwitterAuthConfig(getResources()
                         .getString(R.string.com_twitter_sdk_android_CONSUMER_KEY),
                         getResources().getString(R.string.com_twitter_sdk_android_CONSUMER_SECRET)))//pass the created app Consumer KEY and Secret also called API Key and Secret
-                .debug(true)//enable debug mode
+                .debug(true)// enable debug mode
                 .build();
 
-        //finally initialize twitter with created configs
         Twitter.initialize(config);
-        setContentView(R.layout.activity_main);
+
         manager = new SharedPreferencesManager(MainActivity.this);
         loginStatus = manager.retrieveBoolean("login",false);
         twitterLoginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_btn);
@@ -81,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void failure(TwitterException exception) {
                 // Do something on failure
-                Toast.makeText(getApplicationContext(),exception.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"ddd" + exception.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -105,15 +111,18 @@ public class MainActivity extends AppCompatActivity {
             public void failure(TwitterException exception) {
                 // Do something on failure
             }
-        });*/
+        }); */
+
         manager.storeBoolean("login",true);
         manager.storeString("username",twitterSession.getUserName());
         manager.storeLong("userId",twitterSession.getUserId());
-        Intent intent= new Intent(MainActivity.this,FeedScreen.class);
+        Intent intent= new Intent(MainActivity.this, FeedScreen.class);
         intent.putExtra("username",twitterSession.getUserName());
         intent.putExtra("userId",twitterSession.getUserId());
+        intent.putExtra("session", (Parcelable) twitterSession);
         startActivity(intent);
         finish();
+
   /*      TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
         AccountService accountService = twitterApiClient.getAccountService();
         Call<User> call = accountService.verifyCredentials(true, true, true);
@@ -142,12 +151,13 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        // Pass the activity result to the login button.
-        twitterLoginButton.onActivityResult(requestCode, resultCode, data);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            twitterLoginButton.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
