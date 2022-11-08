@@ -244,11 +244,7 @@ public class DetailsScreen extends AppCompatActivity {
 
                 }
             });
-            try {
-                translate.execute(currentText, "en", "fr");
-            } catch (Exception e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+            translate.execute(currentText, "en", "fr");
         } catch (Exception e){
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
