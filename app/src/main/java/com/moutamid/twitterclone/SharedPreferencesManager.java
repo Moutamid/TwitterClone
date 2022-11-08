@@ -79,19 +79,6 @@ public class SharedPreferencesManager {
         mPrefEditor.commit();
     }
 
-    public void storeTweets(String tag, UserModel list){
-        if (currentList == null){
-            currentList = new ArrayList<UserModel>();
-        }
-        currentList.add(list);
-        try{
-            mPrefEditor.putString(tag, ObjectSerializer.serialize(currentList));
-        } catch (Exception e){
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-        mPrefEditor.commit();
-    }
-
     /**
      * @param tag      identifies the value
      * @param defValue default value
@@ -122,21 +109,6 @@ public class SharedPreferencesManager {
 
     public String retrieveString(String tag, String defStr) {
         return sPreferences.getString(tag, defStr);
-    }
-
-    public ArrayList<UserModel> retrieveTweets(String tag, UserModel defValue){
-        if (null == currentList) {
-            currentList = new ArrayList<>();
-        }
-
-        try {
-            currentList = (ArrayList<UserModel>) ObjectSerializer.deserialize(sPreferences.getString("Tweets", ObjectSerializer.serialize(new ArrayList<UserModel>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return currentList;
     }
 
 }
