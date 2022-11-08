@@ -118,7 +118,13 @@ public class FeedScreen extends AppCompatActivity {
 
         List<TweetModel> list = database.mainDAO().getAll();
 
-        if (list.size() >= 1 || list != null){
+        if (Utils.isNetworkConnected(FeedScreen.this)) {
+            getUserTweets();
+        } else {
+            Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
+        }
+
+        if (list.size() >= 1 && list != null){
             FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();

@@ -78,8 +78,8 @@ public class DetailsScreen extends AppCompatActivity {
         copyBtn = findViewById(R.id.copy);
         translateBtn = findViewById(R.id.translate);
         model = (TweetModel) getIntent().getSerializableExtra("tweet_details");
-        name.setText(model.getUsername());
-        username.setText(model.getName());
+        name.setText(model.getName());
+        username.setText(model.getUsername());
         message.setText(model.getMessage());
         currentText = model.getMessage();
         Picasso.with(DetailsScreen.this).load(model.getProfile_image_url()).into(profileImage);
@@ -127,11 +127,11 @@ public class DetailsScreen extends AppCompatActivity {
             int sdk = android.os.Build.VERSION.SDK_INT;
             if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
                 android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(this.CLIPBOARD_SERVICE);
-                clipboard.setText(model.getMessage());
+                clipboard.setText(message.getText().toString());
                 Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
             } else {
                 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(this.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText("Tweet", model.getMessage());
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Tweet", message.getText().toString());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
             }

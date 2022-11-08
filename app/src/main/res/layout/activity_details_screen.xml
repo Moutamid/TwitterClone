@@ -37,6 +37,7 @@
                         android:id="@+id/profile"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:visibility="gone"
                         android:src="@drawable/profile" />
 
                     <TextView
@@ -44,7 +45,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_toRightOf="@+id/profile"
+                        android:layout_alignParentLeft="true"
                         android:text="Name"
                         android:textColor="@color/white"
                         android:textSize="18sp" />
@@ -56,8 +57,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/name"
                         android:layout_marginLeft="8dp"
-                        android:layout_toRightOf="@+id/profile"
+                        android:layout_alignParentLeft="true"
                         android:text="Username"
+                        android:visibility="gone"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
 
@@ -67,7 +69,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/name"
                         android:layout_marginLeft="8dp"
-                        android:layout_toRightOf="@+id/username"
+                        android:layout_alignParentLeft="true"
                         android:text=" 17:20pm"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
@@ -82,8 +84,9 @@
                         android:id="@+id/details"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/profile"
+                        android:layout_below="@id/time"
                         android:layout_marginTop="10dp"
+                        android:padding="8dp"
                         android:text="Message......"
                         android:textColor="@color/white"
                         android:textSize="18sp" />
