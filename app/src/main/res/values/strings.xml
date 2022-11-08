@@ -1,21 +1,7 @@
 <resources>
     <string name="app_name">TwitterClone</string>
 
-<!--    <string name="com_twitter_sdk_android_CONSUMER_KEY">bpnZYpS8o56rlw8LRMvpq80kV</string>-->
-<!--    <string name="com_twitter_sdk_android_CONSUMER_SECRET">vb3ket1IZEKUGZOUwlSsQX2fDLkAKYMErJlzF52njuR4kwnFo8</string>-->
-
-    <string name="com_twitter_sdk_android_CONSUMER_KEY">U9sBkU9f74V9lZeGFhffeUKB0</string>
-    <string name="com_twitter_sdk_android_CONSUMER_SECRET">OIGOgMjL1hkGkxKMVEwG9xvWe9dC09Iae3nD44a37dDNgLBf5y</string>
-
-
-    <string name="Bearer_Token">AAAAAAAAAAAAAAAAAAAAAA4ljAEAAAAAHOK4G31FM%2BS%2F6yVD06luS%2FyEftE%3DgrQTj9RRAmZ1QhXSg0ZhQ6hKFXGIJDfAiT7zQnDwdCOdnotkk5</string>
-
-<!--    <string name="com.twitter.sdk.android.CONSUMER_KEY">P8RD2rS4CjFySvPqL8eoaKvqz</string>-->
-<!--    <string name="com.twitter.sdk.android.CONSUMER_SECRET">ND8cirycjt2n3HdKMAFIGhClIoTLsw9vNq8yiPMB5kmLh8CBpZ</string>-->
-
-<!-- access token  1588946981480710144-UqilxE2SXzO0CAeYy4LkssFg0nRlxR  -->
-
-<!--    GxhP0bv4ScrlZFoVKwPjxjeTx1TDJsbnrTK7tLG4amkQm -->
-
+    <string name="com_twitter_sdk_android_CONSUMER_KEY">5eMqR6pg1W3Tz72kQZVn2zN2x</string>
+    <string name="com_twitter_sdk_android_CONSUMER_SECRET">HaAvgRrAyBaw1kPh0Gj7DngJw0NyvaBfgJEqJ69ICcUzmy1Z8j</string>
 
 </resources>

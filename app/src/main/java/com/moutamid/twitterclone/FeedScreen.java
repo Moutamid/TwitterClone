@@ -97,7 +97,6 @@ public class FeedScreen extends AppCompatActivity {
         manager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(manager);
         session = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        Toast.makeText(this, ""+session, Toast.LENGTH_SHORT).show();
         emailTxt.setText(username);
         Log.d("token",""+id);
         /*UserTimeline userTimeline = new UserTimeline.Builder()
@@ -144,7 +143,7 @@ public class FeedScreen extends AppCompatActivity {
         tweetCall.enqueue(new Callback<List<Tweet>>() {
             @Override
             public void success(Result<List<Tweet>> result) {
-                for (int i = 0; i < result.data.size(); i++){
+                for (int i = 0; i < result.data.size(); i++) {
                     Tweet tweet = result.data.get(i);
                     UserModel model = new UserModel();
                     model.setId(tweet.id);

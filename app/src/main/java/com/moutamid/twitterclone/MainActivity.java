@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -57,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         // finally initialize twitter with created configs
-        Twitter.initialize(this);
-        setContentView(R.layout.activity_main);
+        // Twitter.initialize(this);
 
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))//enable logging when app is in debug mode
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         Twitter.initialize(config);
-
+        setContentView(R.layout.activity_main);
         manager = new SharedPreferencesManager(MainActivity.this);
         loginStatus = manager.retrieveBoolean("login",false);
         twitterLoginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_btn);
@@ -82,48 +80,55 @@ public class MainActivity extends AppCompatActivity {
                 String token = authToken.token;
                 String secret = authToken.secret;
                 loginMethod(session);
+                Log.d("TAG12", "Login Page Success");
             }
 
             @Override
             public void failure(TwitterException exception) {
                 // Do something on failure
-                Toast.makeText(getApplicationContext(),"ddd" + exception.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),exception.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public void loginMethod(TwitterSession twitterSession){
 
-      /*  authClient = new TwitterAuthClient();
+       /* TwitterAuthClient authClient = new TwitterAuthClient();
         authClient.requestEmail(twitterSession, new Callback<String>() {
             @Override
             public void success(Result<String> result) {
                 // Do something with the result, which provides the email address
                 String userName=result.data;
                 manager.storeBoolean("login",true);
-                Intent intent= new Intent(MainActivity.this,FeedScreen.class);
+                Intent intent= new Intent(MainActivity.this, FeedScreen.class);
                 intent.putExtra("username",userName);
                 startActivity(intent);
                 finish();
+                Log.d("TAG123", "Running");
             }
 
             @Override
             public void failure(TwitterException exception) {
                 // Do something on failure
+                Toast.makeText(MainActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        }); */
+        });*/
 
-        manager.storeBoolean("login",true);
-        manager.storeString("username",twitterSession.getUserName());
-        manager.storeLong("userId",twitterSession.getUserId());
-        Intent intent= new Intent(MainActivity.this, FeedScreen.class);
-        intent.putExtra("username",twitterSession.getUserName());
-        intent.putExtra("userId",twitterSession.getUserId());
-        intent.putExtra("session", (Parcelable) twitterSession);
-        startActivity(intent);
-        finish();
+        try {
+            manager.storeBoolean("login",true);
+            manager.storeString("username",twitterSession.getUserName());
+            manager.storeLong("userId",twitterSession.getUserId());
+            Intent intent= new Intent(MainActivity.this, FeedScreen.class);
+            intent.putExtra("username",twitterSession.getUserName());
+            intent.putExtra("userId",twitterSession.getUserId());
+            // intent.putExtra("session", (Parcelable) twitterSession);
+            startActivity(intent);
+            finish();
+        } catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
-  /*      TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+       /* TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
         AccountService accountService = twitterApiClient.getAccountService();
         Call<User> call = accountService.verifyCredentials(true, true, true);
         call.enqueue(new Callback<com.twitter.sdk.android.core.models.User>() {
@@ -140,6 +145,13 @@ public class MainActivity extends AppCompatActivity {
                     String userLastNmae = fullname.substring(fullname.lastIndexOf(" "));
                     String userScreenName = user.screenName;
 
+                    Intent intent= new Intent(MainActivity.this, FeedScreen.class);
+                    intent.putExtra("username",fullname);
+//                    intent.putExtra("userId",twitterSession.getUserId());
+//                    intent.putExtra("session", (Parcelable) twitterSession);
+                    startActivity(intent);
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -155,9 +167,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-            twitterLoginButton.onActivityResult(requestCode, resultCode, data);
-        }
+        twitterLoginButton.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -173,4 +183,5 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
+
 }
