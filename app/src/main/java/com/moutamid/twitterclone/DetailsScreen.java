@@ -54,7 +54,7 @@ public class DetailsScreen extends AppCompatActivity {
 
     private ImageView postImage;
     private TextView name, username, time, message;
-    private AppCompatButton deleteBtn, downloadBtn, copyBtn, translateBtn;
+    private Button deleteBtn, downloadBtn, copyBtn, translateBtn;
     private TweetModel model;
     private CircleImageView profileImage;
     File file;

@@ -41,7 +41,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation files('libs\\twitter4j-core-4.0.3.jar')
-    implementation 'org.apache.httpcomponents:httpclient:4.5'
+    // implementation 'org.apache.httpcomponents:httpclient:4.5'
+    implementation 'cz.msebera.android:httpclient:4.5.8'
 
     //implementation 'com.github.parse-community:ParseTwitterUtils-Android:1.13.0'
 
