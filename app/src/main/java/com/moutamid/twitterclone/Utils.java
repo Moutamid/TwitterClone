@@ -3,6 +3,7 @@ package com.moutamid.twitterclone;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
 
 
 public class Utils {
@@ -18,11 +19,7 @@ public class Utils {
 			}
 		}
 
-		/*
-		 * Toast toast = Toast.makeText(activity, activity.getResources()
-		 * .getString(R.string.no_internet), Toast.LENGTH_SHORT);
-		 * toast.setGravity(Gravity.CENTER, 0, 0); toast.show();
-		 */
+		Toast.makeText(context, "Internet is not connected", Toast.LENGTH_SHORT).show();
 
 		return false;
 	}

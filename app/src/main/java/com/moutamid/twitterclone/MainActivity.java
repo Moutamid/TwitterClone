@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.StrictMode;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferencesManager manager;
     private boolean loginStatus = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         manager = new SharedPreferencesManager(MainActivity.this);
         loginStatus = manager.retrieveBoolean("login",false);
         twitterLoginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_btn);
+
         twitterLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
@@ -91,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     public void loginMethod(TwitterSession twitterSession){
 
        /* TwitterAuthClient authClient = new TwitterAuthClient();
@@ -176,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
         if (loginStatus){
             String userName = manager.retrieveString("username","");
             long userId = manager.retrieveLong("userId",0);
-            Intent intent= new Intent(MainActivity.this,FeedScreen.class);
+            Intent intent= new Intent(MainActivity.this, FeedScreen.class);
             intent.putExtra("username",userName);
             intent.putExtra("userId",userId);
             startActivity(intent);

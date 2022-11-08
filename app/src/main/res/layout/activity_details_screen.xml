@@ -6,194 +6,202 @@
     android:layout_height="match_parent"
     tools:context=".DetailsScreen">
 
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <androidx.cardview.widget.CardView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/cardview_dark_background"
-            app:cardElevation="8dp"
-            android:id="@+id/cardview">
+            android:layout_height="match_parent">
 
-            <RelativeLayout
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                app:cardBackgroundColor="@color/LightBlue"
+                app:cardElevation="8dp">
 
-                <ImageView
-                    android:id="@+id/profile"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/profile" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Name"
-                    android:id="@+id/name"
-                    android:textSize="18sp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_toRightOf="@+id/profile"
-                    android:textColor="@color/white"/>
-
-
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/name"
-                    android:layout_marginLeft="8dp"
-                    android:layout_toRightOf="@+id/profile"
-                    android:text="Username"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/time"
-                    android:textSize="14sp"
-                    android:text=" 17:20pm"
-                    android:layout_marginLeft="8dp"
-                    android:layout_below="@+id/name"
-                    android:layout_toRightOf="@+id/username"
-                    android:textColor="@color/white"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/twitter_white"
-                    android:layout_alignParentRight="true"/>
-
-                <TextView
-                    android:id="@+id/details"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/profile"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/profile" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_toRightOf="@+id/profile"
+                        android:text="Name"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/name"
+                        android:layout_marginLeft="8dp"
+                        android:layout_toRightOf="@+id/profile"
+                        android:text="Username"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/name"
+                        android:layout_marginLeft="8dp"
+                        android:layout_toRightOf="@+id/username"
+                        android:text=" 17:20pm"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/twitter_white" />
+
+                    <TextView
+                        android:id="@+id/details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/profile"
+                        android:layout_marginTop="10dp"
+                        android:text="Message......"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_below="@+id/cardview"
+                android:layout_marginTop="12dp"
+                android:scaleType="centerCrop" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/delete"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_bg"
+                        android:drawableLeft="@drawable/ic_baseline_delete_24"
+                        android:padding="8dp"
+                        android:text="Delete"
+                        android:textColor="@color/white" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/download"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_bg"
+                        android:drawableLeft="@drawable/ic_baseline_cloud_download_24"
+                        android:padding="8dp"
+                        android:text="Download"
+                        android:textColor="@color/white" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Message......"
-                    android:textColor="@color/white"
-                    android:textSize="18sp" />
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
 
-            </RelativeLayout>
-
-        </androidx.cardview.widget.CardView>
-
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_below="@+id/cardview"
-            android:scaleType="centerCrop"
-            android:src="@drawable/profile" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true">
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/copy"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_bg"
+                        android:drawableLeft="@drawable/ic_baseline_content_copy_24"
+                        android:padding="8dp"
+                        android:text="Copy"
+                        android:textColor="@color/white" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/translate"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_bg"
+                        android:drawableLeft="@drawable/ic_baseline_translate_24"
+                        android:padding="8dp"
+                        android:text="Translate"
+                        android:textColor="@color/white" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_delete_24"
-                    android:background="@drawable/button_bg"
-                    android:text="Delete"
-                    android:padding="8dp"
-                    android:textColor="@color/white"
-                    android:id="@+id/delete"/>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_cloud_download_24"
-                    android:background="@drawable/button_bg"
-                    android:text="Download"
-                    android:padding="8dp"
-                    android:textColor="@color/white"
-                    android:id="@+id/download"/>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
 
             </LinearLayout>
 
+        </RelativeLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
-
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_content_copy_24"
-                    android:background="@drawable/button_bg"
-                    android:text="Copy"
-                    android:padding="8dp"
-                    android:textColor="@color/white"
-                    android:id="@+id/copy"/>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_translate_24"
-                    android:background="@drawable/button_bg"
-                    android:text="Translate"
-                    android:padding="8dp"
-                    android:textColor="@color/white"
-                    android:id="@+id/translate"/>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-    </RelativeLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

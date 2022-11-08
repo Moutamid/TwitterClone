@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moutamid.twitterclone.DetailsScreen;
+import com.moutamid.twitterclone.Model.TweetModel;
 import com.moutamid.twitterclone.Model.UserModel;
 import com.moutamid.twitterclone.R;
 import com.twitter.sdk.android.core.models.User;
@@ -19,13 +20,14 @@ import com.twitter.sdk.android.tweetui.UserTimeline;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedViewHolder>{
 
     private Context mContext;
-    private ArrayList<UserModel> userModelArrayList;
+    private List<TweetModel> userModelArrayList;
 
-    public FeedListAdapter(Context mContext,ArrayList<UserModel> modelArrayList){
+    public FeedListAdapter(Context mContext,List<TweetModel> modelArrayList){
         this.mContext = mContext;
         this.userModelArrayList = modelArrayList;
     }
@@ -39,7 +41,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
 
     @Override
     public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
-        UserModel model = userModelArrayList.get(position);
+        TweetModel model = userModelArrayList.get(position);
 
         holder.nameTxt.setText(model.getName());
         holder.timeTxt.setText(model.getCreated_at());
@@ -49,7 +51,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DetailsScreen.class);
-                intent.putExtra("tweet_details",model);
+                intent.putExtra("tweet_details", model);
                 mContext.startActivity(intent);
 
             }

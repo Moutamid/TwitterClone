@@ -1,10 +1,12 @@
 package com.moutamid.twitterclone;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -23,7 +25,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moutamid.twitterclone.Adapters.FeedListAdapter;
+import com.moutamid.twitterclone.Model.TweetModel;
 import com.moutamid.twitterclone.Model.UserModel;
+import com.moutamid.twitterclone.database.RoomDB;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Result;
@@ -59,17 +63,19 @@ import retrofit2.Call;
 
 public class FeedScreen extends AppCompatActivity {
 
-    private ImageView searchBar;
     private RecyclerView recyclerView;
     private TextView emailTxt;
     private String username;
+    private SharedPreferencesManager sharedPref;
     private String JSON_URL = "https://api.twitter.com/2/users/%s/tweets";
     private long id;
-    private ArrayList<UserModel> tweetList = new ArrayList<>();
+    RoomDB database;
+    private ArrayList<TweetModel> tweetList = new ArrayList<>();
     private String bearerToken = "AAAAAAAAAAAAAAAAAAAAAHLUiQEAAAAATcIyY%2BxekJ5M7R%2FpDLSiBvr8N6E%3DgxSzwJvDlqkyL0k0fs7i1eDkwcYpytc42GhDs8MB6GNtVFBQMC";
     private TweetTimelineRecyclerViewAdapter adapter;
     private TwitterSession session;
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +94,10 @@ public class FeedScreen extends AppCompatActivity {
 
         //finally initialize twitter with created configs
         Twitter.initialize(config);
-        searchBar = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerView);
+
+        sharedPref = new SharedPreferencesManager(FeedScreen.this);
+
         emailTxt = findViewById(R.id.email);
         username = getIntent().getStringExtra("username");
         id = getIntent().getLongExtra("userId",0);
@@ -99,6 +107,29 @@ public class FeedScreen extends AppCompatActivity {
         session = TwitterCore.getInstance().getSessionManager().getActiveSession();
         emailTxt.setText(username);
         Log.d("token",""+id);
+
+        /*if (Utils.isNetworkConnected(FeedScreen.this)) {
+            getUserTweets();
+        } else {
+            Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
+        }*/
+
+        database = RoomDB.getInstance(this);
+
+        List<TweetModel> list = database.mainDAO().getAll();
+
+        if (list.size() >= 1 || list != null){
+            FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        } else {
+            if (Utils.isNetworkConnected(FeedScreen.this)) {
+                getUserTweets();
+            } else {
+                Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
+            }
+        }
+
         /*UserTimeline userTimeline = new UserTimeline.Builder()
                 .userId(id)//User ID of the user to show tweets for
                 .screenName(username)//screen name of the user to show tweets for
@@ -131,21 +162,19 @@ public class FeedScreen extends AppCompatActivity {
 
         //finally set the created adapter to recycler view
         recyclerView.setAdapter(adapter); */
-        getUserTweets();
-        //getTweets(id, bearerToken);
     }
 
     private void getUserTweets() {
         TwitterApiClient twitterApiClient =  TwitterCore.getInstance().getApiClient(session);
         Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
-                id, username, 10, null, null, false,
+                id, username, 100, null, null, false,
                 false, false, true);
         tweetCall.enqueue(new Callback<List<Tweet>>() {
             @Override
             public void success(Result<List<Tweet>> result) {
                 for (int i = 0; i < result.data.size(); i++) {
                     Tweet tweet = result.data.get(i);
-                    UserModel model = new UserModel();
+                    TweetModel model = new TweetModel();
                     model.setId(tweet.id);
                     model.setName(tweet.user.screenName);
                     model.setUsername(tweet.user.name);
@@ -153,17 +182,24 @@ public class FeedScreen extends AppCompatActivity {
                     model.setProfile_image_url(tweet.user.profileImageUrl);
                     model.setMessage(tweet.text);
                     model.setCreated_at(tweet.createdAt);
-                    tweetList.add(model);
+                    if (tweet.entities.media.size() >= 1){
+                        model.setImageUrl(tweet.entities.media.get(0).mediaUrl);
+                    } else {
+                        model.setImageUrl("");
+                    }
+                    database.mainDAO().insert(model);
+                    tweetList.clear();
+                    tweetList.addAll(database.mainDAO().getAll());
                 }
 
-                FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this,tweetList);
+                FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void failure(TwitterException exception) {
-                Toast.makeText(getApplicationContext(), "gggg " + exception.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), exception.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 exception.printStackTrace();
             }
         });
