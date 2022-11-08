@@ -158,22 +158,22 @@ public class DetailsScreen extends AppCompatActivity {
         });
 
         english.setOnClickListener(v -> {
-            translateEnglish();
+            message.setText(currentText);
             dialog.cancel();
         });
 
         germany.setOnClickListener(v -> {
-            translateGerman();
+            translate("de");
             dialog.cancel();
         });
 
         french.setOnClickListener(v -> {
-            translateFrench();
+            translate("fr");
             dialog.cancel();
         });
 
         spanish.setOnClickListener(v -> {
-            translateSpanish();
+            translate("es");
             dialog.cancel();
         });
 
@@ -183,7 +183,7 @@ public class DetailsScreen extends AppCompatActivity {
         dialog.getWindow().setGravity(Gravity.CENTER);
     }
 
-    private void translateSpanish() {
+    private void translate(String code){
         TranslateAPI translate = new TranslateAPI();
         translate.setOnTranslationCompleteListener(new TranslateAPI.OnTranslationCompleteListener() {
             @Override
@@ -201,57 +201,7 @@ public class DetailsScreen extends AppCompatActivity {
 
             }
         });
-        translate.execute(currentText, "en", "es");
-    }
-
-    private void translateGerman() {
-        TranslateAPI translate = new TranslateAPI();
-        translate.setOnTranslationCompleteListener(new TranslateAPI.OnTranslationCompleteListener() {
-            @Override
-            public void onStartTranslation() {
-
-            }
-
-            @Override
-            public void onCompleted(String text) {
-                message.setText(text);
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
-        translate.execute(currentText, "en", "de");
-    }
-
-    private void translateFrench() {
-        try {
-            TranslateAPI translate = new TranslateAPI();
-            translate.setOnTranslationCompleteListener(new TranslateAPI.OnTranslationCompleteListener() {
-                @Override
-                public void onStartTranslation() {
-
-                }
-
-                @Override
-                public void onCompleted(String text) {
-                    message.setText(text);
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-            translate.execute(currentText, "en", "fr");
-        } catch (Exception e){
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void translateEnglish() {
-        message.setText(currentText);
+        translate.execute(currentText, "en", code);
     }
 
 }
