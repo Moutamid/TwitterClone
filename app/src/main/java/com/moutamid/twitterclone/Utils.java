@@ -19,7 +19,7 @@ public class Utils {
 			}
 		}
 
-		Toast.makeText(context, "Internet is not connected", Toast.LENGTH_SHORT).show();
+		// Toast.makeText(context, "Internet is not connected", Toast.LENGTH_SHORT).show();
 
 		return false;
 	}
