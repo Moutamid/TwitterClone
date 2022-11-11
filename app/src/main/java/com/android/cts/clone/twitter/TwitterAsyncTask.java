@@ -9,7 +9,7 @@ import android.widget.ListView;
 
 import androidx.annotation.RequiresApi;
 
-import com.android.cts.R;
+import com.android.cts.clone.R;
 
 import java.util.ArrayList;
 

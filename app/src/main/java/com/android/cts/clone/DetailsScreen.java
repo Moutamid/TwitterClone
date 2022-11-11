@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.cts.R;
+import com.android.cts.clone.R;
 import com.androidnetworking.AndroidNetworking;
 import com.artjimlop.altex.AltexImageDownloader;
 import com.facebook.stetho.okhttp3.StethoInterceptor;

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.cts.R;
+import com.android.cts.clone.R;
 import com.android.cts.clone.DetailsScreen;
 import com.android.cts.clone.Model.TweetModel;
 

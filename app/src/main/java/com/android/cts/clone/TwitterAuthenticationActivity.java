@@ -10,7 +10,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.android.cts.R;
+import com.android.cts.clone.R;
 
 public class TwitterAuthenticationActivity extends Activity {
     public final static String EXTRA_URL = "extra_url";
