@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             manager.storeLong("userId",twitterSession.getUserId());
             Intent intent= new Intent(MainActivity.this, FeedScreen.class);
             intent.putExtra("username",twitterSession.getUserName());
-            intent.putExtra("userId",twitterSession.getUserId());
+            intent.putExtra("userId", twitterSession.getUserId());
             // intent.putExtra("session", (Parcelable) twitterSession);
             startActivity(intent);
             finish();

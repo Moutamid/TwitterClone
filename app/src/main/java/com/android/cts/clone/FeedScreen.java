@@ -39,9 +39,13 @@ import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -158,23 +162,37 @@ public class FeedScreen extends AppCompatActivity {
 
     private void getUserTweets() {
         TwitterApiClient twitterApiClient =  TwitterCore.getInstance().getApiClient(session);
-        Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
+        /*Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
                 id, username, 100, null, null, false,
-                false, false, true);
+                false, false, true);*/
+
+        Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(100,
+                null, null, false, false, false, true);
+
         tweetCall.enqueue(new Callback<List<Tweet>>() {
             @Override
             public void success(Result<List<Tweet>> result) {
                 for (int i = 0; i < result.data.size(); i++) {
                     Tweet tweet = result.data.get(i);
                     TweetModel model = new TweetModel();
+
+                    String date = null;
+
+                    try {
+                        date = new SimpleDateFormat("E, MMM dd, yyyy hh:mm:ss", Locale.getDefault())
+                                .format(new SimpleDateFormat("E MMM dd hh:mm:ss Z yyyy").parse(tweet.createdAt));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
                     model.setId(tweet.id);
                     model.setName(tweet.user.screenName);
                     model.setUsername(tweet.user.name);
                     model.setEmail(tweet.user.email);
                     model.setProfile_image_url(tweet.user.profileImageUrl);
                     model.setMessage(tweet.text);
-                    model.setCreated_at(tweet.createdAt);
-                    if (tweet.entities.media.size() >= 1){
+                    model.setCreated_at(date);
+                    if (tweet.entities.media.size() >= 1) {
                         model.setImageUrl(tweet.entities.media.get(0).mediaUrl);
                     } else {
                         model.setImageUrl("");

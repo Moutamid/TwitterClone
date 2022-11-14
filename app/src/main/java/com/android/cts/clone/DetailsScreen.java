@@ -142,7 +142,7 @@ public class DetailsScreen extends AppCompatActivity {
         });
 
         english.setOnClickListener(v -> {
-            message.setText(currentText);
+            translate("en");
             dialog.cancel();
         });
 
