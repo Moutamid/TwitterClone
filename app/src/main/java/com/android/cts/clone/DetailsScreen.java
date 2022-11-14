@@ -38,7 +38,7 @@ public class DetailsScreen extends AppCompatActivity {
 
     private ImageView postImage;
     private TextView name, username, time, message;
-    private Button deleteBtn, downloadBtn, copyBtn, translateBtn;
+    private ImageButton deleteBtn, downloadBtn, copyBtn, translateBtn;
     private TweetModel model;
     private CircleImageView profileImage;
     File file;
@@ -94,7 +94,7 @@ public class DetailsScreen extends AppCompatActivity {
 
         deleteBtn.setOnClickListener(v -> {
             database.mainDAO().Delete(model);
-            Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
             finish();
         });

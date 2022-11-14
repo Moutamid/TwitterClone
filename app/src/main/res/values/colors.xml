@@ -11,4 +11,5 @@
     <color name="button_text_color">#FFFFFF</color>
     <color name="button_background">@color/LightBlue</color>
     <color name="button_background_pressed">#005A8B</color>
+    <color name="grey">#e5e5e5</color>
 </resources>
