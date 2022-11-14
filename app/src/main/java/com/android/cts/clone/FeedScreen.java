@@ -115,10 +115,13 @@ public class FeedScreen extends AppCompatActivity {
         }
 
         if (list.size() >= 1 && list != null){
+            Log.d("List123", "List offline "+list.size());
             FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+            getUserTweets();
         } else {
+            Log.d("List123", "List zero "+list.size());
             if (Utils.isNetworkConnected(FeedScreen.this)) {
                 getUserTweets();
             } else {
@@ -165,8 +168,8 @@ public class FeedScreen extends AppCompatActivity {
         /*Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
                 id, username, 100, null, null, false,
                 false, false, true);*/
-
-        Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(100,
+        Log.d("List123", "inside Function");
+         Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(100,
                 null, null, false, false, false, true);
 
         tweetCall.enqueue(new Callback<List<Tweet>>() {
@@ -192,6 +195,7 @@ public class FeedScreen extends AppCompatActivity {
                     model.setProfile_image_url(tweet.user.profileImageUrl);
                     model.setMessage(tweet.text);
                     model.setCreated_at(date);
+
                     if (tweet.entities.media.size() >= 1) {
                         model.setImageUrl(tweet.entities.media.get(0).mediaUrl);
                     } else {
@@ -199,6 +203,7 @@ public class FeedScreen extends AppCompatActivity {
                     }
                     database.mainDAO().insert(model);
                     tweetList.clear();
+                    Log.d("List123", "Working "+tweetList.size() + "  " + i);
                     tweetList.addAll(database.mainDAO().getAll());
                 }
 
