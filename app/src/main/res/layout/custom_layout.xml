@@ -1,42 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:padding="12sp"
     android:background="@drawable/dividers">
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_marginEnd="5dp"
+        android:layout_toLeftOf="@id/time"
+        android:text="Linkdin"
+        android:padding="4dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Linkdin"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:id="@+id/title"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Message"
-                android:textSize="18sp"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                android:id="@+id/message"/>
-        </LinearLayout>
-
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:padding="4dp"
+        android:text="Message"
+        android:textSize="18sp" />
 
         <TextView
             android:id="@+id/time"
@@ -47,6 +38,4 @@
             android:layout_alignParentRight="true"
             android:textSize="14sp" />
 
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

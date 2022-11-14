@@ -182,14 +182,14 @@ public class FeedScreen extends AppCompatActivity {
                     String date = null;
 
                     try {
-                        date = new SimpleDateFormat("E, MMM dd, yyyy hh:mm:ss", Locale.getDefault())
+                        date = new SimpleDateFormat("E, MMM dd yyyy, hh:mm:ss", Locale.getDefault())
                                 .format(new SimpleDateFormat("E MMM dd hh:mm:ss Z yyyy").parse(tweet.createdAt));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
                     model.setId(tweet.id);
-                    model.setName(tweet.user.screenName);
+                    model.setName("@" + tweet.user.screenName);
                     model.setUsername(tweet.user.name);
                     model.setEmail(tweet.user.email);
                     model.setProfile_image_url(tweet.user.profileImageUrl);
