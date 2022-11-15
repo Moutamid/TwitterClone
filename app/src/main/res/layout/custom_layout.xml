@@ -3,31 +3,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12sp"
-    android:background="@drawable/dividers">
+    android:focusable="true"
+    android:background="@drawable/item_selector">
 
-    <TextView
-        android:id="@+id/title"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:layout_toLeftOf="@id/time"
-        android:text="Linkdin"
-        android:padding="4dp"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:padding="12sp">
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
-        android:padding="4dp"
-        android:text="Message"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_toLeftOf="@id/time"
+            android:text="Linkdin"
+            android:padding="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:padding="4dp"
+            android:text="Message"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/time"
@@ -37,5 +42,13 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#939393"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

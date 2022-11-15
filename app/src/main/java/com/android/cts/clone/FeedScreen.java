@@ -64,6 +64,7 @@ public class FeedScreen extends AppCompatActivity {
     private String bearerToken = "AAAAAAAAAAAAAAAAAAAAAHLUiQEAAAAATcIyY%2BxekJ5M7R%2FpDLSiBvr8N6E%3DgxSzwJvDlqkyL0k0fs7i1eDkwcYpytc42GhDs8MB6GNtVFBQMC";
     private TweetTimelineRecyclerViewAdapter adapter;
     private TwitterSession session;
+    List<TweetModel> list;
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -98,28 +99,16 @@ public class FeedScreen extends AppCompatActivity {
         emailTxt.setText(username);
         Log.d("token",""+id);
 
-        /*if (Utils.isNetworkConnected(FeedScreen.this)) {
-            getUserTweets();
-        } else {
-            Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
-        }*/
 
         database = RoomDB.getInstance(this);
 
-        List<TweetModel> list = database.mainDAO().getAll();
-
-        if (Utils.isNetworkConnected(FeedScreen.this)) {
-            getUserTweets();
-        } else {
-            Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
-        }
+        list = database.mainDAO().getAll();
 
         if (list.size() >= 1 && list != null){
             Log.d("List123", "List offline "+list.size());
             FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-            getUserTweets();
         } else {
             Log.d("List123", "List zero "+list.size());
             if (Utils.isNetworkConnected(FeedScreen.this)) {
@@ -128,39 +117,14 @@ public class FeedScreen extends AppCompatActivity {
                 Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
             }
         }
+    }
 
-        /*UserTimeline userTimeline = new UserTimeline.Builder()
-                .userId(id)//User ID of the user to show tweets for
-                .screenName(username)//screen name of the user to show tweets for
-                .includeReplies(false)//Whether to include replies. Defaults to false.
-                .includeRetweets(false)//Whether to include re-tweets. Defaults to true.
-                .maxItemsPerRequest(2)//Max number of items to return per request
-                .build();
-
-        adapter = new TweetTimelineRecyclerViewAdapter.Builder(FeedScreen.this)
-                .setTimeline(userTimeline)//set the created timeline
-
-                //action callback to listen when user like/unlike the tweet
-                .setOnActionCallback(new Callback<Tweet>() {
-                    @Override
-                    public void success(Result<Tweet> result) {
-                        //do something on success response
-                        Toast.makeText(FeedScreen.this,""+ result.data.text,Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void failure(TwitterException exception) {
-                        Log.d("msg",exception.getMessage());
-                        //do something on failure response
-                        Toast.makeText(FeedScreen.this,"dfd "+exception.getMessage(),Toast.LENGTH_LONG).show();
-                    }
-                })
-                //set tweet view style
-                .setViewStyle(com.twitter.sdk.android.R.style.tw__TweetLightStyle)
-                .build();
-
-        //finally set the created adapter to recycler view
-        recyclerView.setAdapter(adapter); */
+    private void refreshTweets() {
+        if (Utils.isNetworkConnected(FeedScreen.this)) {
+            getUserTweets();
+        } else {
+            Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void getUserTweets() {
@@ -220,45 +184,9 @@ public class FeedScreen extends AppCompatActivity {
         });
     }
 
-
-    private void getTweets(long id, String token) {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET,"https://api.twitter.com/2/users/:id/tweets?since_id="+id ,
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        //hiding the progressbar after completion
-                        try {
-                            //getting the whole json object from the response
-                            JSONObject obj = new JSONObject(response);
-                            //   String email = obj.getString("to");
-                             Log.d("msg",obj.getString("created_at"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //    Log.d("error",error.getMessage());
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }){
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
-                params.put("Content-Type", "application/json");
-                params.put("Authorization", String.format("Bearer %s", token));
-                return params;
-            }
-        };
-
-        //creating a request queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        //adding the string request to request queue
-        requestQueue.add(stringRequest);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshTweets();
     }
-
 }
