@@ -167,8 +167,18 @@ public class FeedScreen extends AppCompatActivity {
                     model.setMessage(tweet.text);
                     model.setCreated_at(date);
 
+                    /*long bitrate = 0;
+                    String hq_video_url = "";
+                    for (int j=0; j<tweet.extendedEntities.media.get(0).videoInfo.variants.size(); j++) {
+                            if (tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).bitrate > bitrate) {
+                                bitrate = tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).bitrate;
+                                hq_video_url = tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).url;
+                                Log.d("bitrateee", i + " this " + j + " " + hq_video_url);
+                            }
+                    }*/
+
                     if (tweet.extendedEntities.media.size() >= 1) {
-                        model.setImageUrl(tweet.extendedEntities.media.get(0).mediaUrl);
+                        //model.setImageUrl(tweet.extendedEntities.media.get(0).mediaUrl);
                         model.setPublicImageUrl(tweet.extendedEntities.media.get(0).mediaUrlHttps);
                     } else {
                         model.setImageUrl(null);

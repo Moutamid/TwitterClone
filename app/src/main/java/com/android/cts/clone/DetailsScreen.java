@@ -120,7 +120,7 @@ public class DetailsScreen extends AppCompatActivity {
         fileName = timeStampFormat.format(myDate) + "i";
 
         //file Creating With Folder & Fle Name
-       // file = new File(dirPath, fileName);
+        //file = new File(dirPath, fileName);
 
         deleteBtn.setOnClickListener(v -> {
             database.mainDAO().Delete(model);
@@ -134,13 +134,14 @@ public class DetailsScreen extends AppCompatActivity {
         });
 
         right.setOnClickListener(v -> {
-            loadTweets(position+1);
+            loadTweets(position+ 1);
         });
 
         downloadBtn.setOnClickListener(v -> {
-            if (model.getImageUrl().isEmpty()) {
+            if (model.getPublicImageUrl().isEmpty()) {
                 Toast.makeText(this, "No Image/Video Found", Toast.LENGTH_SHORT).show();
             } else {
+                Toast.makeText(this, model.getPublicImageUrl(), Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions(this, permission, 1);
                 download();
                 //    AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
@@ -167,7 +168,7 @@ public class DetailsScreen extends AppCompatActivity {
     }
 
     private void download() {
-        PRDownloader.download(model.getPublicImageUrl(), file.getPath(), "fileName")
+        PRDownloader.download(model.getPublicImageUrl(), file.getPath(), fileName)
                 .build()
                 .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                     @Override
@@ -219,7 +220,7 @@ public class DetailsScreen extends AppCompatActivity {
 
         time.setText(model.getCreated_at());
 
-        if (!model.getImageUrl().isEmpty()){
+        if (!model.getPublicImageUrl().isEmpty()){
             downloadBtn.setVisibility(View.VISIBLE);
         } else {
             downloadBtn.setVisibility(View.GONE);
