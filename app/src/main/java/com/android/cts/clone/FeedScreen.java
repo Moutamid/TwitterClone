@@ -146,7 +146,7 @@ public class FeedScreen extends AppCompatActivity {
                     String date = null;
 
                     try {
-                        date = new SimpleDateFormat("E, MMM dd yyyy, hh:mm:ss", Locale.getDefault())
+                        date = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault())
                                 .format(new SimpleDateFormat("E MMM dd hh:mm:ss Z yyyy").parse(tweet.createdAt));
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -161,9 +161,9 @@ public class FeedScreen extends AppCompatActivity {
                     model.setCreated_at(date);
 
                     if (tweet.entities.media.size() >= 1) {
-                        model.setImageUrl(tweet.entities.media.get(0).mediaUrl);
+                        model.setImageUrl(tweet.extendedEntities.media.get(0).mediaUrl);
                     } else {
-                        model.setImageUrl("");
+                        model.setImageUrl(null);
                     }
                     database.mainDAO().insert(model);
                     tweetList.clear();

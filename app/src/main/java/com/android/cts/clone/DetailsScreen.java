@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -19,17 +20,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.cts.clone.R;
 import com.androidnetworking.AndroidNetworking;
 import com.artjimlop.altex.AltexImageDownloader;
+import com.bumptech.glide.Glide;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.android.cts.clone.Model.TweetModel;
 import com.android.cts.clone.database.RoomDB;
+import com.mannan.translateapi.Language;
+import com.mannan.translateapi.TranslateAPI;
 import com.squareup.picasso.Picasso;
+import com.twitter.sdk.android.core.models.MediaEntity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.OkHttpClient;
@@ -45,6 +50,7 @@ public class DetailsScreen extends AppCompatActivity {
     RoomDB database;
     String dirPath, fileName;
     String currentText;
+    List<MediaEntity> mediaEntities;
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -65,11 +71,10 @@ public class DetailsScreen extends AppCompatActivity {
         name.setText(model.getName());
         username.setText(model.getUsername());
         message.setText(model.getMessage());
-        currentText = model.getMessage();
         Picasso.with(DetailsScreen.this).load(model.getProfile_image_url()).into(profileImage);
 
-        if (!model.getImageUrl().isEmpty()) {
-            Picasso.with(DetailsScreen.this).load(model.getImageUrl()).into(postImage);
+        if (model.getImageUrl() != null) {
+            Glide.with(this).load(model.getImageUrl()).into(postImage);
         }
         time.setText(model.getCreated_at());
 
@@ -103,7 +108,7 @@ public class DetailsScreen extends AppCompatActivity {
             if (model.getImageUrl().isEmpty()) {
                 Toast.makeText(this, "No Image/Video Found", Toast.LENGTH_SHORT).show();
             } else {
-                AltexImageDownloader.writeToDisk(DetailsScreen.this, model.getImageUrl(), dirPath);
+                AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
             }
         });
 
@@ -135,7 +140,15 @@ public class DetailsScreen extends AppCompatActivity {
         Button germany = dialog.findViewById(R.id.grm);
         Button french = dialog.findViewById(R.id.frc);
         Button spanish = dialog.findViewById(R.id.span);
+        Button orig = dialog.findViewById(R.id.orig);
         ImageButton cancel = dialog.findViewById(R.id.close);
+
+        currentText = message.getText().toString();
+
+        orig.setOnClickListener(v -> {
+            message.setText(model.getMessage());
+            dialog.cancel();
+        });
 
         cancel.setOnClickListener(v -> {
             dialog.cancel();
@@ -168,8 +181,27 @@ public class DetailsScreen extends AppCompatActivity {
     }
 
     private void translate(String code){
-        TranslateAPI translate = new TranslateAPI();
-        translate.setOnTranslationCompleteListener(new TranslateAPI.OnTranslationCompleteListener() {
+        //TranslateAPI translate = new TranslateAPI();
+
+        TranslateAPI translate = new TranslateAPI(
+                Language.AUTO_DETECT,
+                code,
+                currentText
+        );
+
+        translate.setTranslateListener(new TranslateAPI.TranslateListener() {
+            @Override
+            public void onSuccess(String translatedText) {
+                message.setText(translatedText);
+            }
+
+            @Override
+            public void onFailure(String ErrorText) {
+                Log.d("tt12", ErrorText);
+            }
+        });
+
+        /*translate.setOnTranslationCompleteListener(new TranslateAPI.OnTranslationCompleteListener() {
             @Override
             public void onStartTranslation() {
 
@@ -185,7 +217,7 @@ public class DetailsScreen extends AppCompatActivity {
 
             }
         });
-        translate.execute(currentText, "en", code);
+        translate.execute(currentText, "en", code);*/
     }
 
 }

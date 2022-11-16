@@ -8,17 +8,20 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12sp">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="3dp"
             android:layout_toLeftOf="@id/time"
-            android:text="Linkdin"
+            android:layout_alignParentLeft="true"
             android:padding="4dp"
+            android:text="Linkdin"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -28,7 +31,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="3dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="3dp"
             android:padding="4dp"
             android:text="Message"
@@ -38,9 +43,12 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="17:20pm"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
+            android:text="17:20pm"
+            android:padding="4dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="10dp"
             android:textSize="14sp" />
 
     </RelativeLayout>

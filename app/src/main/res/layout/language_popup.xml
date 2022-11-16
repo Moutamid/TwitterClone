@@ -41,6 +41,16 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/orig"
+            style="@style/Widget.Material3.Button.TextButton.Dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:text="Rollback to Orignal"
+            android:textSize="16sp"
+            android:textColor="@color/black" />
+
+        <Button
             android:id="@+id/eng"
             style="@style/Widget.Material3.Button.TextButton.Dialog"
             android:layout_width="match_parent"

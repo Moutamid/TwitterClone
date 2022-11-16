@@ -66,16 +66,11 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/name"
                         android:layout_marginLeft="8dp"
+                        android:layout_marginTop="10dp"
                         android:layout_alignParentLeft="true"
                         android:text=" 17:20pm"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:src="@drawable/twitter_white" />
 
                 </RelativeLayout>
 
@@ -100,6 +95,8 @@
                 android:layout_below="@+id/details"
                 android:layout_marginTop="12dp"
                 android:scaleType="centerCrop" />
+
+
 
         </RelativeLayout>
 

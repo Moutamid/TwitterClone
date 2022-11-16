@@ -60,6 +60,11 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+
+    implementation 'com.github.iammannan:TranslateAPI:1.1'
+
     implementation 'com.twitter.sdk.android:twitter:3.3.0'
     implementation 'com.twitter.sdk.android:twitter-core:3.3.0'
     implementation 'com.twitter.sdk.android:tweet-ui:3.3.0'
