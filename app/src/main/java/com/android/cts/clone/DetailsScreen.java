@@ -1,17 +1,25 @@
 package com.android.cts.clone;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
@@ -23,9 +31,26 @@ import android.widget.Toast;
 import com.androidnetworking.AndroidNetworking;
 import com.artjimlop.altex.AltexImageDownloader;
 import com.bumptech.glide.Glide;
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
+import com.downloader.PRDownloaderConfig;
+import com.downloader.Progress;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.android.cts.clone.Model.TweetModel;
 import com.android.cts.clone.database.RoomDB;
+import com.fxn.stash.Stash;
+import com.google.android.material.card.MaterialCardView;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.mannan.translateapi.Language;
 import com.mannan.translateapi.TranslateAPI;
 import com.squareup.picasso.Picasso;
@@ -33,6 +58,7 @@ import com.twitter.sdk.android.core.models.MediaEntity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,9 +67,9 @@ import okhttp3.OkHttpClient;
 
 public class DetailsScreen extends AppCompatActivity {
 
-    private ImageView postImage;
+
     private TextView name, username, time, message;
-    private ImageButton deleteBtn, downloadBtn, copyBtn, translateBtn;
+    private MaterialCardView deleteBtn, downloadBtn, copyBtn, translateBtn;
     private TweetModel model;
     private CircleImageView profileImage;
     File file;
@@ -51,34 +77,54 @@ public class DetailsScreen extends AppCompatActivity {
     String dirPath, fileName;
     String currentText;
     List<MediaEntity> mediaEntities;
+    ArrayList<TweetModel> list;
+    int position;
+    ProgressDialog progressDialog;
+    String permission[] = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE};
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_screen);
-        profileImage = findViewById(R.id.profile);
-        postImage = findViewById(R.id.image);
         name = findViewById(R.id.name);
         username = findViewById(R.id.username);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Downloading");
+        progressDialog.setCancelable(false);
+
         message = findViewById(R.id.details);
         time = findViewById(R.id.time);
         deleteBtn = findViewById(R.id.delete);
         downloadBtn = findViewById(R.id.download);
         copyBtn = findViewById(R.id.copy);
         translateBtn = findViewById(R.id.translate);
-        model = (TweetModel) getIntent().getSerializableExtra("tweet_details");
+
+        list = Stash.getArrayList("List", TweetModel.class);
+        position = getIntent().getIntExtra("position", 0);
+
+        model = list.get(position);
+
         name.setText(model.getName());
         username.setText(model.getUsername());
         message.setText(model.getMessage());
-        Picasso.with(DetailsScreen.this).load(model.getProfile_image_url()).into(profileImage);
 
-        if (model.getImageUrl() != null) {
-            Glide.with(this).load(model.getImageUrl()).into(postImage);
-        }
         time.setText(model.getCreated_at());
 
         database = RoomDB.getInstance(this);
+
+        if (!model.getImageUrl().isEmpty()){
+            downloadBtn.setVisibility(View.VISIBLE);
+        }
+
+        PRDownloader.initialize(this);
+
+        PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
+                .setReadTimeout(30_000)
+                .setConnectTimeout(30_000)
+                .build();
+        PRDownloader.initialize(getApplicationContext(), config);
 
         AndroidNetworking.initialize(getApplicationContext());
 
@@ -89,13 +135,13 @@ public class DetailsScreen extends AppCompatActivity {
         AndroidNetworking.initialize(getApplicationContext(), okHttpClient);
 
         //Folder Creating Into Phone Storage
-        dirPath = Environment.getExternalStorageDirectory() + "/Image" + "/Tweetee Tweets" + "/";
+        file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
         Date myDate = new Date();
-        fileName = timeStampFormat.format(myDate) + "i.jpeg";
+        fileName = timeStampFormat.format(myDate) + "i";
 
         //file Creating With Folder & Fle Name
-        file = new File(dirPath, fileName);
+       // file = new File(dirPath, fileName);
 
         deleteBtn.setOnClickListener(v -> {
             database.mainDAO().Delete(model);
@@ -108,7 +154,9 @@ public class DetailsScreen extends AppCompatActivity {
             if (model.getImageUrl().isEmpty()) {
                 Toast.makeText(this, "No Image/Video Found", Toast.LENGTH_SHORT).show();
             } else {
-                AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
+                ActivityCompat.requestPermissions(this, permission, 1);
+                download();
+                //    AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
             }
         });
 
@@ -129,6 +177,49 @@ public class DetailsScreen extends AppCompatActivity {
         translateBtn.setOnClickListener(v -> {
             showDialog();
         });
+    }
+
+    private void download() {
+        PRDownloader.download(model.getPublicImageUrl(), file.getPath(), "fileName")
+                .build()
+                .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                    @Override
+                    public void onStartOrResume() {
+                        progressDialog.show();
+                    }
+                })
+                .setOnPauseListener(new OnPauseListener() {
+                    @Override
+                    public void onPause() {
+
+                    }
+                })
+                .setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel() {
+
+                    }
+                })
+                .setOnProgressListener(new OnProgressListener() {
+                    @Override
+                    public void onProgress(Progress progress) {
+                        long n = progress.currentBytes*100/progress.totalBytes;
+                        progressDialog.setMessage("Downloading " + n + "%");
+                    }
+                })
+                .start(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        progressDialog.dismiss();
+                        Log.d("download", "Download Complete");
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        progressDialog.dismiss();
+                        Log.d("download", error.toString());
+                    }
+                });
     }
 
     private void showDialog() {
@@ -220,4 +311,8 @@ public class DetailsScreen extends AppCompatActivity {
         translate.execute(currentText, "en", code);*/
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

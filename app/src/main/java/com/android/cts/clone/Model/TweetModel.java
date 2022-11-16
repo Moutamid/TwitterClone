@@ -30,21 +30,21 @@ public class TweetModel implements Serializable {
     @ColumnInfo(name = "ImageUrl")
     private String imageUrl = "";
 
+    @ColumnInfo(name = "publicImageUrl")
+    private String publicImageUrl = "";
+
     @ColumnInfo(name = "Profile_Image_URL")
     private String profile_image_url = "";
 
     public TweetModel() {
     }
 
-    public TweetModel(long id, String name, String username, String email, String message, String created_at, String imageUrl, String profile_image_url) {
-        this.id = id;
-        this.name = name;
-        this.username = username;
-        this.email = email;
-        this.message = message;
-        this.created_at = created_at;
-        this.imageUrl = imageUrl;
-        this.profile_image_url = profile_image_url;
+    public String getPublicImageUrl() {
+        return publicImageUrl;
+    }
+
+    public void setPublicImageUrl(String publicImageUrl) {
+        this.publicImageUrl = publicImageUrl;
     }
 
     public long getId() {

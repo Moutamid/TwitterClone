@@ -2,6 +2,7 @@ package com.android.cts.clone.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.cts.clone.R;
 import com.android.cts.clone.DetailsScreen;
 import com.android.cts.clone.Model.TweetModel;
+import com.fxn.stash.Stash;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedViewHolder>{
@@ -45,7 +48,8 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DetailsScreen.class);
-                intent.putExtra("tweet_details", model);
+                Stash.put("List", userModelArrayList);
+                intent.putExtra("position", position);
                 mContext.startActivity(intent);
 
             }

@@ -93,6 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_below="@+id/details"
+                android:visibility="gone"
                 android:layout_marginTop="12dp"
                 android:scaleType="centerCrop" />
 
@@ -112,55 +113,82 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <ImageButton
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="15dp"
-            android:background="@drawable/button_bg"
-            android:backgroundTint="@color/grey"
-            android:src="@drawable/ic_baseline_delete_24"
-            app:tint="@color/LightBlue"
             android:layout_weight="1"
-            android:layout_margin="5dp" />
+            app:cardBackgroundColor="@color/grey"
+            android:layout_margin="5dp">
 
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                app:tint="@color/LightBlue"
+                android:src="@drawable/ic_baseline_delete_24" />
 
-        <ImageButton
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/download"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="15dp"
-            android:background="@drawable/button_bg"
-            android:backgroundTint="@color/grey"
-            android:src="@drawable/ic_baseline_cloud_download_24"
-            app:tint="@color/LightBlue"
+            android:visibility="gone"
             android:layout_weight="1"
-            android:layout_margin="5dp" />
+            app:cardBackgroundColor="@color/grey"
+            android:layout_margin="5dp">
 
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="15dp"
+                android:layout_gravity="center"
+                app:tint="@color/LightBlue"
+                android:src="@drawable/ic_baseline_cloud_download_24" />
 
-        <ImageButton
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/copy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="15dp"
-            android:background="@drawable/button_bg"
-            android:backgroundTint="@color/grey"
-            android:src="@drawable/ic_baseline_content_copy_24"
-            app:tint="@color/LightBlue"
             android:layout_weight="1"
-            android:layout_margin="5dp" />
+            app:cardBackgroundColor="@color/grey"
+            android:layout_margin="5dp">
 
-        <ImageButton
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="15dp"
+                android:layout_gravity="center"
+                app:tint="@color/LightBlue"
+                android:src="@drawable/ic_baseline_content_copy_24" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/translate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="15dp"
-            android:background="@drawable/button_bg"
-            android:backgroundTint="@color/grey"
-            android:src="@drawable/ic_baseline_translate_24"
-            app:tint="@color/LightBlue"
             android:layout_weight="1"
-            android:layout_margin="5dp" />
+            app:cardBackgroundColor="@color/grey"
+            android:layout_margin="5dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                app:tint="@color/LightBlue"
+                android:src="@drawable/ic_baseline_translate_24" />
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 

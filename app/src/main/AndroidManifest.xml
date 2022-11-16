@@ -23,6 +23,7 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".MyApplication"
         android:theme="@style/Theme.TwitterClone"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">

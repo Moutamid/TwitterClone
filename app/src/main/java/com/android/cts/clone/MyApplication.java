@@ -3,6 +3,7 @@ package com.android.cts.clone;
 import android.app.Application;
 import android.util.Log;
 
+import com.fxn.stash.Stash;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -13,6 +14,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Stash.init(this);
+
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))//enable logging when app is in debug mode
                 .twitterAuthConfig(new TwitterAuthConfig(getResources()

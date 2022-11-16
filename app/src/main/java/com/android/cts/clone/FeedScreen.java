@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ import retrofit2.Call;
 public class FeedScreen extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private ImageButton refresh;
     private TextView emailTxt;
     private String username;
     private SharedPreferencesManager sharedPref;
@@ -86,6 +88,7 @@ public class FeedScreen extends AppCompatActivity {
         //finally initialize twitter with created configs
         Twitter.initialize(config);
         recyclerView = findViewById(R.id.recyclerView);
+        refresh = findViewById(R.id.refresh);
 
         sharedPref = new SharedPreferencesManager(FeedScreen.this);
 
@@ -117,6 +120,10 @@ public class FeedScreen extends AppCompatActivity {
                 Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
             }
         }
+
+        refresh.setOnClickListener(v -> {
+            refreshTweets();
+        });
     }
 
     private void refreshTweets() {
@@ -160,8 +167,9 @@ public class FeedScreen extends AppCompatActivity {
                     model.setMessage(tweet.text);
                     model.setCreated_at(date);
 
-                    if (tweet.entities.media.size() >= 1) {
+                    if (tweet.extendedEntities.media.size() >= 1) {
                         model.setImageUrl(tweet.extendedEntities.media.get(0).mediaUrl);
+                        model.setPublicImageUrl(tweet.extendedEntities.media.get(0).mediaUrlHttps);
                     } else {
                         model.setImageUrl(null);
                     }
@@ -187,6 +195,6 @@ public class FeedScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        refreshTweets();
+        //refreshTweets();
     }
 }
