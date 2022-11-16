@@ -4,19 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,13 +21,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
-import com.artjimlop.altex.AltexImageDownloader;
-import com.bumptech.glide.Glide;
 import com.downloader.Error;
 import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
@@ -45,15 +39,8 @@ import com.android.cts.clone.Model.TweetModel;
 import com.android.cts.clone.database.RoomDB;
 import com.fxn.stash.Stash;
 import com.google.android.material.card.MaterialCardView;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.mannan.translateapi.Language;
 import com.mannan.translateapi.TranslateAPI;
-import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.models.MediaEntity;
 
 import java.io.File;
@@ -69,7 +56,7 @@ public class DetailsScreen extends AppCompatActivity {
 
 
     private TextView name, username, time, message;
-    private MaterialCardView deleteBtn, downloadBtn, copyBtn, translateBtn;
+    private MaterialCardView deleteBtn, downloadBtn, copyBtn, translateBtn, left, right;
     private TweetModel model;
     private CircleImageView profileImage;
     File file;
@@ -100,23 +87,15 @@ public class DetailsScreen extends AppCompatActivity {
         downloadBtn = findViewById(R.id.download);
         copyBtn = findViewById(R.id.copy);
         translateBtn = findViewById(R.id.translate);
+        left = findViewById(R.id.arrowLeft);
+        right = findViewById(R.id.arrowRight);
 
         list = Stash.getArrayList("List", TweetModel.class);
         position = getIntent().getIntExtra("position", 0);
 
-        model = list.get(position);
-
-        name.setText(model.getName());
-        username.setText(model.getUsername());
-        message.setText(model.getMessage());
-
-        time.setText(model.getCreated_at());
+        loadTweets(position);
 
         database = RoomDB.getInstance(this);
-
-        if (!model.getImageUrl().isEmpty()){
-            downloadBtn.setVisibility(View.VISIBLE);
-        }
 
         PRDownloader.initialize(this);
 
@@ -148,6 +127,14 @@ public class DetailsScreen extends AppCompatActivity {
             //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
             finish();
+        });
+
+        left.setOnClickListener(v -> {
+            loadTweets(position-1);
+        });
+
+        right.setOnClickListener(v -> {
+            loadTweets(position+1);
         });
 
         downloadBtn.setOnClickListener(v -> {
@@ -220,6 +207,23 @@ public class DetailsScreen extends AppCompatActivity {
                         Log.d("download", error.toString());
                     }
                 });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
+    private void loadTweets(int i){
+        model = list.get(i);
+        position = i;
+        name.setText(model.getName());
+        username.setText(model.getUsername());
+        message.setText(model.getMessage());
+
+        time.setText(model.getCreated_at());
+
+        if (!model.getImageUrl().isEmpty()){
+            downloadBtn.setVisibility(View.VISIBLE);
+        } else {
+            downloadBtn.setVisibility(View.GONE);
+        }
     }
 
     private void showDialog() {

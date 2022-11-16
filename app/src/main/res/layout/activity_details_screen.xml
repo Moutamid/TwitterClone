@@ -10,7 +10,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/buttonLayout">
+        android:layout_above="@id/arrowLayout">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -34,15 +34,15 @@
                         android:id="@+id/profile"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:visibility="gone"
-                        android:src="@drawable/profile" />
+                        android:src="@drawable/profile"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
                         android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="8dp"
                         android:text="Name"
                         android:textColor="@color/white"
                         android:textSize="18sp" />
@@ -53,21 +53,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/name"
-                        android:layout_marginLeft="8dp"
                         android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="8dp"
                         android:text="Username"
-                        android:visibility="gone"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/name"
+                        android:layout_alignParentLeft="true"
                         android:layout_marginLeft="8dp"
                         android:layout_marginTop="10dp"
-                        android:layout_alignParentLeft="true"
                         android:text=" 17:20pm"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
@@ -93,15 +93,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_below="@+id/details"
-                android:visibility="gone"
                 android:layout_marginTop="12dp"
-                android:scaleType="centerCrop" />
-
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
 
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/arrowLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_above="@id/buttonLayout"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/arrowLeft"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/grey"
+            android:layout_margin="5dp">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                app:tint="@color/LightBlue"
+                android:src="@drawable/ic_baseline_arrow_back_24" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/arrowRight"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/grey"
+            android:layout_margin="5dp">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                app:tint="@color/LightBlue"
+                android:src="@drawable/ic_baseline_arrow_forward_24" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonLayout"
