@@ -182,6 +182,7 @@ public class FeedScreen extends AppCompatActivity {
                         model.setPublicImageUrl(tweet.extendedEntities.media.get(0).mediaUrlHttps);
                     } else {
                         model.setImageUrl(null);
+                        model.setPublicImageUrl(null);
                     }
                     database.mainDAO().insert(model);
                     tweetList.clear();
