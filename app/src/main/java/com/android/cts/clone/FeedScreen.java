@@ -169,7 +169,8 @@ public class FeedScreen extends AppCompatActivity {
 
     private void getUserTweets() {
         stashDate = Stash.getString("loginSession");
-        Toast.makeText(this, "stash : " + stashDate, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "stash : " + stashDate, Toast.LENGTH_SHORT).show();
+
         try {
             dateS = formatter.parse(stashDate);
         } catch (ParseException e) {
@@ -201,12 +202,15 @@ public class FeedScreen extends AppCompatActivity {
                     }
 
                     try {
-                        dateE = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault()).parse(enddate);
+                        dateE = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault()).parse(date);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
-                    if (dateE.compareTo(dateS) == 0 || dateE.before(dateS)) {
+                    Log.d("dateee", "dateE : " + dateE);
+                    Log.d("dateee", "dateS : " + dateS);
+
+                    if (dateE.compareTo(dateS) == 0 || (dateE.compareTo(dateS) > 0 && dateE.compareTo(endTime) < 0)) {
                         model.setId(tweet.id);
                         model.setName("@" + tweet.user.screenName);
                         model.setUsername(tweet.user.name);
