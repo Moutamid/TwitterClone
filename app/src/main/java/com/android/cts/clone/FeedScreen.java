@@ -71,8 +71,8 @@ public class FeedScreen extends AppCompatActivity {
     private TwitterSession session;
     List<TweetModel> list;
     SimpleDateFormat formatter;
-    Date sessionTime, dateE, dateS;
-    String s, stashDate;
+    Date sessionTime, dateE, dateS, endTime;
+    String s, stashDate, enddate;
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -96,9 +96,35 @@ public class FeedScreen extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         refresh = findViewById(R.id.refresh);
 
+        String se = null;
+
+        try {
+            se = Stash.getString("loginSession");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         formatter  = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa");
-        sessionTime = new Date();
-        s = formatter.format(sessionTime);
+        endTime = new Date();
+        enddate = formatter.format(endTime);
+
+        if (se.isEmpty() || se == null){
+            sessionTime = new Date();
+            s = formatter.format(sessionTime);
+            Stash.put("loginSession", s);
+        }
+
+        MyApplication.getInstance().setOnVisibilityChangeListener(new MyApplication.ValueChangeListener() {
+            @Override
+            public void onChanged(Boolean value) {
+                Log.d("isAppInBackground", String.valueOf(value));
+                if(value){
+                    sessionTime = new Date();
+                    s = formatter.format(sessionTime);
+                    Stash.put("loginSession", s);
+                }
+            }
+        });
 
         sharedPref = new SharedPreferencesManager(FeedScreen.this);
 
@@ -116,21 +142,17 @@ public class FeedScreen extends AppCompatActivity {
 
         list = database.mainDAO().getAll();
 
-        if (list.size() >= 1 && list != null){
+        refreshTweets();
+
+        /*if (list.size() >= 1 && list != null){
             Log.d("List123", "List offline "+list.size());
             FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-            Stash.put("loginSession", s);
         } else {
-            Stash.put("loginSession", s);
             Log.d("List123", "List zero "+list.size());
-            if (Utils.isNetworkConnected(FeedScreen.this)) {
-                getUserTweets();
-            } else {
-                Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
-            }
-        }
+            refreshTweets();
+        }*/
 
         refresh.setOnClickListener(v -> {
             refreshTweets();
@@ -147,7 +169,7 @@ public class FeedScreen extends AppCompatActivity {
 
     private void getUserTweets() {
         stashDate = Stash.getString("loginSession");
-
+        Toast.makeText(this, "stash : " + stashDate, Toast.LENGTH_SHORT).show();
         try {
             dateS = formatter.parse(stashDate);
         } catch (ParseException e) {
@@ -179,12 +201,12 @@ public class FeedScreen extends AppCompatActivity {
                     }
 
                     try {
-                        dateE = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault()).parse(date);
+                        dateE = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault()).parse(enddate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
-                    if (dateE.compareTo(dateS) == 0) {
+                    if (dateE.compareTo(dateS) == 0 || dateE.before(dateS)) {
                         model.setId(tweet.id);
                         model.setName("@" + tweet.user.screenName);
                         model.setUsername(tweet.user.name);
@@ -221,5 +243,16 @@ public class FeedScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //refreshTweets();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }
