@@ -36,7 +36,18 @@ public class TweetModel implements Serializable {
     @ColumnInfo(name = "Profile_Image_URL")
     private String profile_image_url = "";
 
+    @ColumnInfo(name = "contentType")
+    private String contentType = "";
+
     public TweetModel() {
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public String getPublicImageUrl() {

@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.android.cts.clone.Adapters.FeedListAdapter;
 import com.android.cts.clone.Model.TweetModel;
 import com.android.cts.clone.database.RoomDB;
+import com.fxn.stash.Stash;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Result;
@@ -42,6 +43,8 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,6 +70,9 @@ public class FeedScreen extends AppCompatActivity {
     private TweetTimelineRecyclerViewAdapter adapter;
     private TwitterSession session;
     List<TweetModel> list;
+    SimpleDateFormat formatter;
+    Date sessionTime, dateE, dateS;
+    String s, stashDate;
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -90,6 +96,10 @@ public class FeedScreen extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         refresh = findViewById(R.id.refresh);
 
+        formatter  = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa");
+        sessionTime = new Date();
+        s = formatter.format(sessionTime);
+
         sharedPref = new SharedPreferencesManager(FeedScreen.this);
 
         emailTxt = findViewById(R.id.email);
@@ -102,7 +112,6 @@ public class FeedScreen extends AppCompatActivity {
         emailTxt.setText(username);
         Log.d("token",""+id);
 
-
         database = RoomDB.getInstance(this);
 
         list = database.mainDAO().getAll();
@@ -112,7 +121,9 @@ public class FeedScreen extends AppCompatActivity {
             FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+            Stash.put("loginSession", s);
         } else {
+            Stash.put("loginSession", s);
             Log.d("List123", "List zero "+list.size());
             if (Utils.isNetworkConnected(FeedScreen.this)) {
                 getUserTweets();
@@ -135,15 +146,23 @@ public class FeedScreen extends AppCompatActivity {
     }
 
     private void getUserTweets() {
+        stashDate = Stash.getString("loginSession");
+
+        try {
+            dateS = formatter.parse(stashDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         TwitterApiClient twitterApiClient =  TwitterCore.getInstance().getApiClient(session);
         /*Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
                 id, username, 100, null, null, false,
                 false, false, true);*/
         Log.d("List123", "inside Function");
-         Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(100,
-                null, null, false, false, false, true);
+        Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(100,
+                null, null, false, false, true, true);
 
-        tweetCall.enqueue(new Callback<List<Tweet>>() {
+       tweetCall.enqueue(new Callback<List<Tweet>>() {
             @Override
             public void success(Result<List<Tweet>> result) {
                 for (int i = 0; i < result.data.size(); i++) {
@@ -159,48 +178,43 @@ public class FeedScreen extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    model.setId(tweet.id);
-                    model.setName("@" + tweet.user.screenName);
-                    model.setUsername(tweet.user.name);
-                    model.setEmail(tweet.user.email);
-                    model.setProfile_image_url(tweet.user.profileImageUrl);
-                    model.setMessage(tweet.text);
-                    model.setCreated_at(date);
-
-                    /*long bitrate = 0;
-                    String hq_video_url = "";
-                    for (int j=0; j<tweet.extendedEntities.media.get(0).videoInfo.variants.size(); j++) {
-                            if (tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).bitrate > bitrate) {
-                                bitrate = tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).bitrate;
-                                hq_video_url = tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).url;
-                                Log.d("bitrateee", i + " this " + j + " " + hq_video_url);
-                            }
-                    }*/
-
-                    if (tweet.extendedEntities.media.size() >= 1) {
-                        //model.setImageUrl(tweet.extendedEntities.media.get(0).mediaUrl);
-                        model.setPublicImageUrl(tweet.extendedEntities.media.get(0).mediaUrlHttps);
-                    } else {
-                        model.setImageUrl(null);
-                        model.setPublicImageUrl(null);
+                    try {
+                        dateE = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault()).parse(date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                    database.mainDAO().insert(model);
-                    tweetList.clear();
-                    Log.d("List123", "Working "+tweetList.size() + "  " + i);
-                    tweetList.addAll(database.mainDAO().getAll());
-                }
 
-                FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-            }
+                    if (dateE.compareTo(dateS) == 0) {
+                        model.setId(tweet.id);
+                        model.setName("@" + tweet.user.screenName);
+                        model.setUsername(tweet.user.name);
+                        model.setEmail(tweet.user.email);
+                        model.setProfile_image_url(tweet.user.profileImageUrl);
+                        model.setMessage(tweet.text);
+                        model.setCreated_at(date);
+
+                        if (tweet.extendedEntities.media.size() > 0) {
+                            model.setContentType(tweet.extendedEntities.media.get(0).type);
+                            model.setPublicImageUrl(tweet.extendedEntities.media.get(0).mediaUrlHttps);
+                        }
+                        database.mainDAO().insert(model);
+                        tweetList.clear();
+                        Log.d("List123", "Working " + tweetList.size() + "  " + i);
+                        tweetList.addAll(database.mainDAO().getAll());
+
+                        FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }
+                    }
+                }
 
             @Override
             public void failure(TwitterException exception) {
                 Toast.makeText(getApplicationContext(), exception.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 exception.printStackTrace();
             }
-        });
+       });
     }
 
     @Override

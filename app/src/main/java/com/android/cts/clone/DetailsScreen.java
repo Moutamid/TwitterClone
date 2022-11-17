@@ -93,8 +93,6 @@ public class DetailsScreen extends AppCompatActivity {
         list = Stash.getArrayList("List", TweetModel.class);
         position = getIntent().getIntExtra("position", 0);
 
-        loadTweets(position);
-
         database = RoomDB.getInstance(this);
 
         PRDownloader.initialize(this);
@@ -113,11 +111,7 @@ public class DetailsScreen extends AppCompatActivity {
                 .build();
         AndroidNetworking.initialize(getApplicationContext(), okHttpClient);
 
-        //Folder Creating Into Phone Storage
-        file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
-        Date myDate = new Date();
-        fileName = timeStampFormat.format(myDate) + "i";
+        loadTweets(position);
 
         //file Creating With Folder & Fle Name
         //file = new File(dirPath, fileName);
@@ -125,26 +119,35 @@ public class DetailsScreen extends AppCompatActivity {
         deleteBtn.setOnClickListener(v -> {
             database.mainDAO().Delete(model);
             //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
-            finish();
+            /*startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
+            finish();*/
+            int p = position;
+            if (position < list.size()){
+                loadTweets(position + 1);
+                list.remove(p);
+            }
         });
 
         left.setOnClickListener(v -> {
-            loadTweets(position-1);
+            if (position >= 0){
+                loadTweets(position-1);
+            }
         });
 
         right.setOnClickListener(v -> {
-            loadTweets(position+ 1);
+            if (position < list.size()){
+                loadTweets(position + 1);
+            }
         });
 
         downloadBtn.setOnClickListener(v -> {
             if (model.getPublicImageUrl().isEmpty()) {
                 Toast.makeText(this, "No Image/Video Found", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, model.getPublicImageUrl(), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(this, model.getContentType(), Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions(this, permission, 1);
                 download();
-                //    AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
+                // AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
             }
         });
 
@@ -213,6 +216,18 @@ public class DetailsScreen extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     private void loadTweets(int i){
         model = list.get(i);
+
+        //Folder Creating Into Phone Storage
+        file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+        SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
+        Date myDate = new Date();
+        if (model.getContentType().equals("video")){
+            fileName = timeStampFormat.format(myDate) + "i.mp4";
+        } else {
+            fileName = timeStampFormat.format(myDate) + "i.jpg";
+        }
+
         position = i;
         name.setText(model.getName());
         username.setText(model.getUsername());
