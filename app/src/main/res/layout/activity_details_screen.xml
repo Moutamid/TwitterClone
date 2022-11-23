@@ -116,6 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="15dp"
+            android:background="@drawable/item_selector"
             android:layout_weight="1"
             app:cardBackgroundColor="@color/grey"
             android:layout_margin="5dp">
@@ -137,6 +138,7 @@
             android:layout_height="match_parent"
             android:padding="15dp"
             android:layout_weight="1"
+            android:background="@drawable/item_selector"
             app:cardBackgroundColor="@color/grey"
             android:layout_margin="5dp">
 
@@ -167,6 +169,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="15dp"
+            android:background="@drawable/item_selector"
             android:layout_weight="1"
             app:cardBackgroundColor="@color/grey"
             android:layout_margin="5dp">
@@ -187,6 +190,7 @@
             android:layout_height="match_parent"
             android:padding="15dp"
             android:visibility="gone"
+            android:background="@drawable/item_selector"
             android:layout_weight="1"
             app:cardBackgroundColor="@color/grey"
             android:layout_margin="5dp">
@@ -206,6 +210,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="15dp"
+            android:background="@drawable/item_selector"
             android:layout_weight="1"
             app:cardBackgroundColor="@color/grey"
             android:layout_margin="5dp">
@@ -225,6 +230,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="15dp"
+            android:background="@drawable/item_selector"
             android:layout_weight="1"
             app:cardBackgroundColor="@color/grey"
             android:layout_margin="5dp">

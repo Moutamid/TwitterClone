@@ -51,7 +51,7 @@
             android:padding="12sp"
             android:src="@drawable/ic_baseline_refresh_24"
             app:tint="@color/white"
-            android:background="@color/LightBlue" />
+            android:background="@drawable/refresh_selector" />
 
     </RelativeLayout>
 

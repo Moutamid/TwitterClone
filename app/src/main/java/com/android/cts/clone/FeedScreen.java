@@ -122,6 +122,7 @@ public class FeedScreen extends AppCompatActivity {
                     sessionTime = new Date();
                     s = formatter.format(sessionTime);
                     Stash.put("loginSession", s);
+                    Toast.makeText(getApplicationContext(), "backed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -159,6 +160,7 @@ public class FeedScreen extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     private void refreshTweets() {
         if (Utils.isNetworkConnected(FeedScreen.this)) {
             getUserTweets();
@@ -167,15 +169,18 @@ public class FeedScreen extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     private void getUserTweets() {
-        stashDate = Stash.getString("loginSession");
-        //Toast.makeText(this, "stash : " + stashDate, Toast.LENGTH_SHORT).show();
+        Date d = new Date();
+        stashDate = Stash.getString("loginSession", formatter.format(d));
 
         try {
             dateS = formatter.parse(stashDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        //Toast.makeText(this, "stash : " + stashDate, Toast.LENGTH_SHORT).show();
 
         TwitterApiClient twitterApiClient =  TwitterCore.getInstance().getApiClient(session);
         /*Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
@@ -230,7 +235,7 @@ public class FeedScreen extends AppCompatActivity {
 
                         FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
                         recyclerView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemInserted(tweetList.size()-1);
                     }
                     }
                 }
@@ -243,10 +248,11 @@ public class FeedScreen extends AppCompatActivity {
        });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onResume() {
         super.onResume();
-        //refreshTweets();
+        refreshTweets();
     }
 
     @Override
