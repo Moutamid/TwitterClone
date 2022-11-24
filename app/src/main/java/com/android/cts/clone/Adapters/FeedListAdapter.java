@@ -50,7 +50,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DetailsScreen.class);
                 Stash.put("List", userModelArrayList);
-                Stash.put("position", position);
+                Stash.put("position", holder.getAdapterPosition());
                 mContext.startActivity(intent);
             }
         });

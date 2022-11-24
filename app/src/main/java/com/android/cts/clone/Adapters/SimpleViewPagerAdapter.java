@@ -114,7 +114,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater layoutInflater= (LayoutInflater) ctx.getSystemService(ctx.LAYOUT_INFLATER_SERVICE);
         View view=layoutInflater.inflate(R.layout.detail_screen,container,false);
-        model = list.get(position);
+        TweetModel model = list.get(position);
 
         name = view.findViewById(R.id.name);
         username = view.findViewById(R.id.username);
