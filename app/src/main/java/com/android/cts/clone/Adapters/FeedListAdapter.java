@@ -1,5 +1,6 @@
 package com.android.cts.clone.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -37,7 +38,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FeedViewHolder holder, @SuppressLint("RecyclerView") int position) {
         TweetModel model = userModelArrayList.get(position);
 
         holder.nameTxt.setText(model.getName());
@@ -49,9 +50,8 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DetailsScreen.class);
                 Stash.put("List", userModelArrayList);
-                intent.putExtra("position", position);
+                Stash.put("position", position);
                 mContext.startActivity(intent);
-
             }
         });
     }

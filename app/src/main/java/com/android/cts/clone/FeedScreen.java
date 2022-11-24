@@ -197,7 +197,7 @@ public class FeedScreen extends AppCompatActivity {
         Log.d("List123", "inside Function");
 
         Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(170,
-                null, null, true, true, true, true);
+                null, null, false, true, true, true);
 
       /*  Call<List<Tweet>> tweetCall = twitterApiClient.getListService().statuses(id, "slug", username, id, null, null, 100, true, true);
 */
