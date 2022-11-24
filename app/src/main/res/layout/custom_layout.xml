@@ -19,9 +19,8 @@
             android:layout_marginTop="3dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="3dp"
-            android:layout_toLeftOf="@id/time"
             android:padding="4dp"
-            android:text="Linkdin"
+            android:text="\u0040BajwaShb_"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -32,11 +31,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="3dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="3dp"
             android:padding="4dp"
-            android:text="Message"
+            android:text="Message..."
             android:textSize="18sp" />
 
         <TextView
@@ -47,8 +45,10 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="10dp"
+            android:layout_toRightOf="@id/title"
+            android:gravity="end|center_vertical"
             android:padding="4dp"
-            android:text="17:20pm"
+            android:text="Thu, 22 Nov 2022, 17:20 pm"
             android:textSize="14sp" />
 
     </RelativeLayout>
@@ -57,7 +57,7 @@
         android:id="@+id/line1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#939393"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:background="#939393" />
 
 </RelativeLayout>

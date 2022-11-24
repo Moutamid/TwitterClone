@@ -129,13 +129,13 @@ public class DetailsScreen extends AppCompatActivity {
         });
 
         left.setOnClickListener(v -> {
-            if (position >= 0){
+            if (position > 0){
                 loadTweets(position-1);
             }
         });
 
         right.setOnClickListener(v -> {
-            if (position < list.size()){
+            if (position < list.size()-1){
                 loadTweets(position + 1);
             }
         });
@@ -222,6 +222,7 @@ public class DetailsScreen extends AppCompatActivity {
 
         SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
         Date myDate = new Date();
+
         if (model.getContentType().equals("video")){
             fileName = timeStampFormat.format(myDate) + "i.mp4";
         } else {
@@ -229,6 +230,16 @@ public class DetailsScreen extends AppCompatActivity {
         }
 
         position = i;
+
+        /*if (position == 0){
+            left.setVisibility(View.GONE);
+        } else if (position == list.size()-1){
+            right.setVisibility(View.GONE);
+        } else {
+            left.setVisibility(View.VISIBLE);
+            right.setVisibility(View.VISIBLE);
+        }*/
+
         name.setText(model.getName());
         username.setText(model.getUsername());
         message.setText(model.getMessage());

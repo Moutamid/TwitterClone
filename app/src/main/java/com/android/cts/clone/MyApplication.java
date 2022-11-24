@@ -49,7 +49,6 @@ public class MyApplication extends Application implements LifecycleObserver {
     public void onCreate() {
         super.onCreate();
         Stash.init(this);
-
         mInstance = this;
 
         // addObserver

@@ -3,5 +3,6 @@
 
     <string name="com_twitter_sdk_android_CONSUMER_KEY">5eMqR6pg1W3Tz72kQZVn2zN2x</string>
     <string name="com_twitter_sdk_android_CONSUMER_SECRET">HaAvgRrAyBaw1kPh0Gj7DngJw0NyvaBfgJEqJ69ICcUzmy1Z8j</string>
+    <string name="message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi dolorum ipsam minus quam similique soluta.</string>
 
 </resources>

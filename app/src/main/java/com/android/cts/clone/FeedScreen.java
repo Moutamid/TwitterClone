@@ -35,17 +35,20 @@ import com.twitter.sdk.android.core.TwitterConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.internal.TwitterApi;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +96,7 @@ public class FeedScreen extends AppCompatActivity {
 
         //finally initialize twitter with created configs
         Twitter.initialize(config);
+
         recyclerView = findViewById(R.id.recyclerView);
         refresh = findViewById(R.id.refresh);
 
@@ -100,18 +104,18 @@ public class FeedScreen extends AppCompatActivity {
 
         try {
             se = Stash.getString("loginSession");
+            Log.d("List123", "Stash : " + se);
         } catch (Exception e){
             e.printStackTrace();
         }
 
         formatter  = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa");
-        endTime = new Date();
-        enddate = formatter.format(endTime);
 
         if (se.isEmpty() || se == null){
             sessionTime = new Date();
             s = formatter.format(sessionTime);
             Stash.put("loginSession", s);
+            Log.d("List123", "Stash S : " + s);
         }
 
         MyApplication.getInstance().setOnVisibilityChangeListener(new MyApplication.ValueChangeListener() {
@@ -122,7 +126,6 @@ public class FeedScreen extends AppCompatActivity {
                     sessionTime = new Date();
                     s = formatter.format(sessionTime);
                     Stash.put("loginSession", s);
-                    Toast.makeText(getApplicationContext(), "backed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -173,9 +176,14 @@ public class FeedScreen extends AppCompatActivity {
     private void getUserTweets() {
         Date d = new Date();
         stashDate = Stash.getString("loginSession", formatter.format(d));
+        Log.d("List123", "Stash F : " + stashDate);
+
+        endTime = new Date();
+        enddate = formatter.format(endTime);
 
         try {
             dateS = formatter.parse(stashDate);
+            endTime = formatter.parse(enddate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -183,14 +191,18 @@ public class FeedScreen extends AppCompatActivity {
         //Toast.makeText(this, "stash : " + stashDate, Toast.LENGTH_SHORT).show();
 
         TwitterApiClient twitterApiClient =  TwitterCore.getInstance().getApiClient(session);
-        /*Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
+       /* Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
                 id, username, 100, null, null, false,
                 false, false, true);*/
         Log.d("List123", "inside Function");
-        Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(100,
-                null, null, false, false, true, true);
 
-       tweetCall.enqueue(new Callback<List<Tweet>>() {
+        Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(170,
+                null, null, true, true, true, true);
+
+      /*  Call<List<Tweet>> tweetCall = twitterApiClient.getListService().statuses(id, "slug", username, id, null, null, 100, true, true);
+*/
+
+        tweetCall.enqueue(new Callback<List<Tweet>>() {
             @Override
             public void success(Result<List<Tweet>> result) {
                 for (int i = 0; i < result.data.size(); i++) {
@@ -212,8 +224,9 @@ public class FeedScreen extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    Log.d("dateee", "dateE : " + dateE);
-                    Log.d("dateee", "dateS : " + dateS);
+                    Log.d("List123", "dateE : " + dateE);
+                    Log.d("List123", "dateS : " + dateS);
+                    Log.d("List123", "enddate : " + endTime);
 
                     if (dateE.compareTo(dateS) == 0 || (dateE.compareTo(dateS) > 0 && dateE.compareTo(endTime) < 0)) {
                         model.setId(tweet.id);
@@ -229,16 +242,16 @@ public class FeedScreen extends AppCompatActivity {
                             model.setPublicImageUrl(tweet.extendedEntities.media.get(0).mediaUrlHttps);
                         }
                         database.mainDAO().insert(model);
-                        tweetList.clear();
                         Log.d("List123", "Working " + tweetList.size() + "  " + i);
-                        tweetList.addAll(database.mainDAO().getAll());
-
-                        FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
-                        recyclerView.setAdapter(adapter);
-                        adapter.notifyItemInserted(tweetList.size()-1);
-                    }
+                        tweetList.add(model);
                     }
                 }
+                Collections.reverse(tweetList);
+
+                FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                recyclerView.setAdapter(adapter);
+                adapter.notifyItemInserted(tweetList.size()-1);
+            }
 
             @Override
             public void failure(TwitterException exception) {
