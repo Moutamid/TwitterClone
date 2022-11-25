@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
 
     @Override
     public void onBindViewHolder(@NonNull FeedViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        TweetModel model = userModelArrayList.get(position);
+        TweetModel model = userModelArrayList.get(holder.getAdapterPosition());
 
         holder.nameTxt.setText(model.getName());
         holder.timeTxt.setText(model.getCreated_at());
@@ -52,6 +53,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
                 Stash.put("List", userModelArrayList);
                 Stash.put("position", holder.getAdapterPosition());
                 mContext.startActivity(intent);
+                Log.d("position12", "Feed Adapter : " + holder.getAdapterPosition());
             }
         });
     }

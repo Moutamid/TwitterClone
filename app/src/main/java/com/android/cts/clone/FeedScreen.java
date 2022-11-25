@@ -191,16 +191,17 @@ public class FeedScreen extends AppCompatActivity {
         //Toast.makeText(this, "stash : " + stashDate, Toast.LENGTH_SHORT).show();
 
         TwitterApiClient twitterApiClient =  TwitterCore.getInstance().getApiClient(session);
-       /* Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
+        /* Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().userTimeline(
                 id, username, 100, null, null, false,
-                false, false, true);*/
+                false, false, true); */
         Log.d("List123", "inside Function");
 
         Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(170,
                 null, null, false, true, true, true);
 
-      /*  Call<List<Tweet>> tweetCall = twitterApiClient.getListService().statuses(id, "slug", username, id, null, null, 100, true, true);
-*/
+      /* Call<List<Tweet>> tweetCall = twitterApiClient.getListService().statuses(id, "slug", username, id, null, null, 100, true, true); */
+
+        //tweetList.clear();
 
         tweetCall.enqueue(new Callback<List<Tweet>>() {
             @Override
@@ -242,20 +243,23 @@ public class FeedScreen extends AppCompatActivity {
                             model.setPublicImageUrl(tweet.extendedEntities.media.get(0).mediaUrlHttps);
                         }
                         database.mainDAO().insert(model);
+                        //tweetList.clear();
                         Log.d("List123", "Working " + tweetList.size() + "  " + i);
                         tweetList.add(model);
                     }
                 }
+
                 Collections.reverse(tweetList);
 
                 FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyItemInserted(tweetList.size()-1);
+
             }
 
             @Override
             public void failure(TwitterException exception) {
-                Toast.makeText(getApplicationContext(), exception.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), " EEEE " + exception.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 exception.printStackTrace();
             }
        });
@@ -265,6 +269,7 @@ public class FeedScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        tweetList.clear();
         refreshTweets();
     }
 
