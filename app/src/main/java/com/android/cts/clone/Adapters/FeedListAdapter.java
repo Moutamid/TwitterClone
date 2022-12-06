@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.cts.clone.R;
 import com.android.cts.clone.DetailsScreen;
 import com.android.cts.clone.Model.TweetModel;
+import com.android.cts.clone.ViewPagerActivity;
 import com.fxn.stash.Stash;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, DetailsScreen.class);
+                Intent intent = new Intent(mContext, ViewPagerActivity.class);
                 Stash.put("List", userModelArrayList);
                 Stash.put("position", holder.getAdapterPosition());
                 mContext.startActivity(intent);

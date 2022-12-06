@@ -42,6 +42,18 @@ public class TweetModel implements Serializable {
     public TweetModel() {
     }
 
+    public TweetModel(long id, String name, String username, String email, String message, String created_at, String profile_image_url, String publicImageUrl, String contentType) {
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.message = message;
+        this.created_at = created_at;
+        this.publicImageUrl = publicImageUrl;
+        this.profile_image_url = profile_image_url;
+        this.contentType = contentType;
+    }
+
     public String getContentType() {
         return contentType;
     }

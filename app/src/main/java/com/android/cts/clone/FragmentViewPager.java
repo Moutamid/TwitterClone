@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public class FragmentViewPager extends Fragment {
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detail_screen, container, false);

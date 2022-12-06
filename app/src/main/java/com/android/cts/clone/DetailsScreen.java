@@ -271,8 +271,9 @@ public class DetailsScreen extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
-        finish();
+        /*startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
+        finish();*/
+        onBackPressed();
     }
 
     private void showDialog() {
