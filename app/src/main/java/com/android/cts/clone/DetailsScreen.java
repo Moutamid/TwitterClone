@@ -268,6 +268,13 @@ public class DetailsScreen extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
+        finish();
+    }
+
     private void showDialog() {
         final Dialog dialog = new Dialog(DetailsScreen.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

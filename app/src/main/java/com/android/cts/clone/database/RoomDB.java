@@ -15,7 +15,9 @@ public abstract class RoomDB extends RoomDatabase {
 
     public synchronized static RoomDB getInstance(Context context){
         if (database == null){
-            database = Room.databaseBuilder(context.getApplicationContext(), RoomDB.class, DATABASE_NAME)
+            database = Room.databaseBuilder(
+                    context.getApplicationContext(),
+                            RoomDB.class, DATABASE_NAME)
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build();
