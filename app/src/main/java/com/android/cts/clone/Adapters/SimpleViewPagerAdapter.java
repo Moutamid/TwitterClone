@@ -78,11 +78,11 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE};
 
 
-     public SimpleViewPagerAdapter(Context ctx, ArrayList<TweetModel> modelDataArrayList) {
+     public SimpleViewPagerAdapter(Context ctx, ArrayList<TweetModel> modelDataArrayList, int position) {
         this.ctx = ctx;
         this.list = modelDataArrayList;
 
-         position = Stash.getInt("position", 0);
+         this.position = position;
          Log.d("position12", "Detail Screen : " + position);
 
          database = RoomDB.getInstance(ctx);
@@ -130,6 +130,8 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
         Log.d("position12", "ViewPager Adapter : " + pos);
 
+        position = pos;
+
         name = view.findViewById(R.id.name);
         username = view.findViewById(R.id.username);
         message = view.findViewById(R.id.details);
@@ -139,7 +141,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         copyBtn = view.findViewById(R.id.copy);
         translateBtn = view.findViewById(R.id.translate);
 
-        loadTweets(pos);
+        loadTweets(position);
 
        deleteBtn.setOnClickListener(v -> {
            database.mainDAO().Delete(model);
