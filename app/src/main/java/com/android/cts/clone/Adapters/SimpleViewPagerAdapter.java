@@ -81,8 +81,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
      public SimpleViewPagerAdapter(Context ctx, ArrayList<TweetModel> modelDataArrayList, int position) {
         this.ctx = ctx;
         this.list = modelDataArrayList;
-
-         this.position = position;
+        //  this.position = position;
          Log.d("position12", "Detail Screen : " + position);
 
          database = RoomDB.getInstance(ctx);
@@ -141,7 +140,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         copyBtn = view.findViewById(R.id.copy);
         translateBtn = view.findViewById(R.id.translate);
 
-        loadTweets(position);
+        loadTweets(pos);
 
        deleteBtn.setOnClickListener(v -> {
            database.mainDAO().Delete(model);

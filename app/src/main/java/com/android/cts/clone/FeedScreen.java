@@ -209,8 +209,25 @@ public class FeedScreen extends AppCompatActivity {
                     Log.d("List123", "dateS : " + dateS);
                     Log.d("List123", "enddate : " + endTime);
 
+                    TweetModel model = new TweetModel(
+                            tweet.id,
+                            "@"+ tweet.user.screenName,
+                            tweet.user.name,
+                            tweet.user.email,
+                            tweet.retweeted ? tweet.retweetedStatus.text : tweet.text,
+                            date,
+                            tweet.user.profileImageUrl,
+                            tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).mediaUrlHttps : "",
+                            tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).type : ""
+                    );
+
+                    database.mainDAO().insert(model);
+//                        tweetList.clear();
+                    Log.d("List123", "Working " + tweetList.size() + "  " + i);
+                    tweetList.add(model);
+
                     if (dateE.compareTo(dateS) == 0 || (dateE.compareTo(dateS) > 0 && dateE.compareTo(endTime) < 0)) {
-                        TweetModel model = new TweetModel(
+                        /*TweetModel model = new TweetModel(
                                 tweet.id,
                                 "@"+ tweet.user.screenName,
                                 tweet.user.name,
@@ -225,7 +242,7 @@ public class FeedScreen extends AppCompatActivity {
                         database.mainDAO().insert(model);
 //                        tweetList.clear();
                         Log.d("List123", "Working " + tweetList.size() + "  " + i);
-                        tweetList.add(model);
+                        tweetList.add(model);*/
                     }
                 }
 
@@ -265,6 +282,5 @@ public class FeedScreen extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 }
