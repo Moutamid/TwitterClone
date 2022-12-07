@@ -25,4 +25,7 @@ public interface MainDAO {
 
     @Delete
     void Delete(TweetModel tweet);
+
+    @Query("DELETE FROM tweets")
+    void Delete();
 }

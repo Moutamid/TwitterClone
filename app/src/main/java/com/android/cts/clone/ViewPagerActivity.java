@@ -29,7 +29,7 @@ public class ViewPagerActivity  extends AppCompatActivity {
         position = Stash.getInt("position", 0);
         Log.d("position12", "Detail Screen : " + position);
 
-        //viewPager.setCurrentItem(position);
+        viewPager.setCurrentItem(position);
         SimpleViewPagerAdapter simpleViewPagerAdapter = new SimpleViewPagerAdapter(this, list, position);
         viewPager.setAdapter(simpleViewPagerAdapter);
         simpleViewPagerAdapter.notifyDataSetChanged();
@@ -42,7 +42,7 @@ public class ViewPagerActivity  extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-
+                viewPager.setCurrentItem(position);
             }
 
             @Override

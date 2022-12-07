@@ -81,7 +81,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
      public SimpleViewPagerAdapter(Context ctx, ArrayList<TweetModel> modelDataArrayList, int position) {
         this.ctx = ctx;
         this.list = modelDataArrayList;
-        //  this.position = position;
+        this.position = position;
          Log.d("position12", "Detail Screen : " + position);
 
          database = RoomDB.getInstance(ctx);
@@ -129,7 +129,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
         Log.d("position12", "ViewPager Adapter : " + pos);
 
-        position = pos;
+        // position = pos;
 
         name = view.findViewById(R.id.name);
         username = view.findViewById(R.id.username);

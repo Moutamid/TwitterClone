@@ -1,7 +1,10 @@
 package com.android.cts.clone;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.widget.ImageButton;
@@ -60,6 +63,7 @@ public class FeedScreen extends AppCompatActivity {
     private final String bearerToken = "AAAAAAAAAAAAAAAAAAAAAHLUiQEAAAAATcIyY%2BxekJ5M7R%2FpDLSiBvr8N6E%3DgxSzwJvDlqkyL0k0fs7i1eDkwcYpytc42GhDs8MB6GNtVFBQMC";
     private TweetTimelineRecyclerViewAdapter adapter;
     private TwitterSession session;
+    SQLiteDatabase db;
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -84,6 +88,8 @@ public class FeedScreen extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         refresh = findViewById(R.id.refresh);
 
+        database = RoomDB.getInstance(this);
+
         String se = null;
 
         try {
@@ -100,6 +106,7 @@ public class FeedScreen extends AppCompatActivity {
             s = formatter.format(sessionTime);
             Stash.put("loginSession", s);
             Log.d("List123", "Stash S : " + s);
+            database.mainDAO().Delete();
         }
 
         MyApplication.getInstance().setOnVisibilityChangeListener(new MyApplication.ValueChangeListener() {
@@ -110,6 +117,7 @@ public class FeedScreen extends AppCompatActivity {
                     sessionTime = new Date();
                     s = formatter.format(sessionTime);
                     Stash.put("loginSession", s);
+                    database.mainDAO().Delete();
                 }
             }
         });
@@ -126,13 +134,11 @@ public class FeedScreen extends AppCompatActivity {
         emailTxt.setText(username);
         Log.d("token", "" + id);
 
-        database = RoomDB.getInstance(this);
-
         list = database.mainDAO().getAll();
 
-        refreshTweets();
+        // refreshTweets();
 
-        /*if (list.size() >= 1 && list != null){
+        if (list.size() >= 1 && list != null){
             Log.d("List123", "List offline "+list.size());
             FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
             recyclerView.setAdapter(adapter);
@@ -140,7 +146,7 @@ public class FeedScreen extends AppCompatActivity {
         } else {
             Log.d("List123", "List zero "+list.size());
             refreshTweets();
-        }*/
+        }
 
         refresh.setOnClickListener(v -> {
             tweetList.clear();
@@ -209,7 +215,7 @@ public class FeedScreen extends AppCompatActivity {
                     Log.d("List123", "dateS : " + dateS);
                     Log.d("List123", "enddate : " + endTime);
 
-                    TweetModel model = new TweetModel(
+/*                    TweetModel model = new TweetModel(
                             tweet.id,
                             "@"+ tweet.user.screenName,
                             tweet.user.name,
@@ -220,14 +226,22 @@ public class FeedScreen extends AppCompatActivity {
                             tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).mediaUrlHttps : "",
                             tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).type : ""
                     );
-
                     database.mainDAO().insert(model);
-//                        tweetList.clear();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            tweetList.clear();
+                            tweetList.addAll(database.mainDAO().getAll());
+                        }
+                    }, 500);
                     Log.d("List123", "Working " + tweetList.size() + "  " + i);
-                    tweetList.add(model);
+                    // tweetList.add(model);
+                    FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();*/
 
                     if (dateE.compareTo(dateS) == 0 || (dateE.compareTo(dateS) > 0 && dateE.compareTo(endTime) < 0)) {
-                        /*TweetModel model = new TweetModel(
+                        TweetModel model = new TweetModel(
                                 tweet.id,
                                 "@"+ tweet.user.screenName,
                                 tweet.user.name,
@@ -240,21 +254,23 @@ public class FeedScreen extends AppCompatActivity {
                         );
 
                         database.mainDAO().insert(model);
-//                        tweetList.clear();
+                        new Handler().postDelayed(() -> {
+                            tweetList.clear();
+                            tweetList.addAll(database.mainDAO().getAll());
+                        }, 500);
                         Log.d("List123", "Working " + tweetList.size() + "  " + i);
-                        tweetList.add(model);*/
+                        // tweetList.add(model);
+                        FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }
                 }
 
-                Collections.reverse(tweetList);
+//                Collections.reverse(tweetList);
 
-                ArrayList<TweetModel> newList = new ArrayList<>(new HashSet<>(tweetList));
+//                ArrayList<TweetModel> newList = new ArrayList<>(new HashSet<>(tweetList));
 
-                FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, newList);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-
-                tweetList.clear();
+                // tweetList.clear();
 
             }
 
