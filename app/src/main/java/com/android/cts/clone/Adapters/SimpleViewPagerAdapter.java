@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.OkHttpClient;
 
@@ -127,14 +129,27 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         LayoutInflater layoutInflater= (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view=layoutInflater.inflate(R.layout.detail_screen,container,false);
 
+        // position = getItemPosition(container);
+
+       new Timer().scheduleAtFixedRate(new TimerTask() {
+           @Override
+           public void run() {
+               //your method
+               position = getItemPosition(container);
+               Log.d("position12", "getItem : " + position);
+           }
+       }, 0, 1000);//put here time 1000 milliseconds=1 second
+
         // pos = position;
        Log.d("position12", "ViewPager Adapter B : " + position);
-       if (pos>0){
+       /*if (pos>0){
            // crash at 2 if pos>0 but if pos>1 its fine with some weird error on UI side but it should be something like -2 or -1
            pos = pos - 2;
-       }
+       }*/
 
-        model = list.get(pos);
+      // position = pos;
+
+        model = list.get(position);
 
         Log.d("position12", "ViewPager Adapter A : " + pos);
         Log.d("position12", "ViewPager Adapter P : " + position);
@@ -148,7 +163,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         copyBtn = view.findViewById(R.id.copy);
         translateBtn = view.findViewById(R.id.translate);
 
-        loadTweets(pos);
+        loadTweets(position);
 
        deleteBtn.setOnClickListener(v -> {
            database.mainDAO().Delete(model);
@@ -345,10 +360,15 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         }
     }
 
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        //position = super.getItemPosition(object);
+        return super.getItemPosition(object);
+    }
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        // container.removeView((View) object);
+        container.removeView((View) object);
     }
 
 
