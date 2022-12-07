@@ -130,12 +130,11 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         // pos = position;
        Log.d("position12", "ViewPager Adapter B : " + position);
        if (pos>0){
-           position = pos-1;
-       } else {
-           position = pos;
+           // crash at 2 but should b something like -2 or -1
+           pos = pos - 2;
        }
 
-        model = list.get(position);
+        model = list.get(pos);
 
         Log.d("position12", "ViewPager Adapter A : " + pos);
         Log.d("position12", "ViewPager Adapter P : " + position);
@@ -149,7 +148,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         copyBtn = view.findViewById(R.id.copy);
         translateBtn = view.findViewById(R.id.translate);
 
-        loadTweets(position);
+        loadTweets(pos);
 
        deleteBtn.setOnClickListener(v -> {
            database.mainDAO().Delete(model);
