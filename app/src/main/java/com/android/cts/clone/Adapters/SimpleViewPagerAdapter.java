@@ -58,6 +58,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import okhttp3.OkHttpClient;
@@ -65,7 +66,7 @@ import okhttp3.OkHttpClient;
 public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPagerAdapter {
 
     Context ctx;
-    ArrayList<TweetModel> list;
+    List<TweetModel> list;
     TextView name, username, time, message;
     MaterialCardView deleteBtn, downloadBtn, copyBtn, translateBtn;
     File file;
@@ -78,7 +79,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE};
 
 
-     public SimpleViewPagerAdapter(Context ctx, ArrayList<TweetModel> modelDataArrayList, int position) {
+     public SimpleViewPagerAdapter(Context ctx, List<TweetModel> modelDataArrayList, int position) {
         this.ctx = ctx;
         this.list = modelDataArrayList;
         this.position = position;
@@ -125,11 +126,19 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     public Object instantiateItem(@NonNull ViewGroup container, int pos) {
         LayoutInflater layoutInflater= (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view=layoutInflater.inflate(R.layout.detail_screen,container,false);
-        model = list.get(pos);
 
-        Log.d("position12", "ViewPager Adapter : " + pos);
+        // pos = position;
+       Log.d("position12", "ViewPager Adapter B : " + position);
+       if (pos>0){
+           position = pos-1;
+       } else {
+           position = pos;
+       }
 
-        // position = pos;
+        model = list.get(position);
+
+        Log.d("position12", "ViewPager Adapter A : " + pos);
+        Log.d("position12", "ViewPager Adapter P : " + position);
 
         name = view.findViewById(R.id.name);
         username = view.findViewById(R.id.username);
@@ -140,10 +149,11 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         copyBtn = view.findViewById(R.id.copy);
         translateBtn = view.findViewById(R.id.translate);
 
-        loadTweets(pos);
+        loadTweets(position);
 
        deleteBtn.setOnClickListener(v -> {
            database.mainDAO().Delete(model);
+           notifyDataSetChanged();
            //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
             /*startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
             finish();*/
@@ -339,7 +349,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View) object);
+        // container.removeView((View) object);
     }
 
 

@@ -215,7 +215,7 @@ public class FeedScreen extends AppCompatActivity {
                     Log.d("List123", "dateS : " + dateS);
                     Log.d("List123", "enddate : " + endTime);
 
-/*                    TweetModel model = new TweetModel(
+                    TweetModel model = new TweetModel(
                             tweet.id,
                             "@"+ tweet.user.screenName,
                             tweet.user.name,
@@ -227,20 +227,17 @@ public class FeedScreen extends AppCompatActivity {
                             tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).type : ""
                     );
                     database.mainDAO().insert(model);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            tweetList.clear();
-                            tweetList.addAll(database.mainDAO().getAll());
-                        }
+                    new Handler().postDelayed(() -> {
+//                            tweetList.clear();
+                        tweetList.addAll(database.mainDAO().getAll());
+                        FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }, 500);
                     Log.d("List123", "Working " + tweetList.size() + "  " + i);
                     // tweetList.add(model);
-                    FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();*/
 
-                    if (dateE.compareTo(dateS) == 0 || (dateE.compareTo(dateS) > 0 && dateE.compareTo(endTime) < 0)) {
+                    /*if (dateE.compareTo(dateS) == 0 || (dateE.compareTo(dateS) > 0 && dateE.compareTo(endTime) < 0)) {
                         TweetModel model = new TweetModel(
                                 tweet.id,
                                 "@"+ tweet.user.screenName,
@@ -255,7 +252,7 @@ public class FeedScreen extends AppCompatActivity {
 
                         database.mainDAO().insert(model);
                         new Handler().postDelayed(() -> {
-                            tweetList.clear();
+                            // tweetList.clear();
                             tweetList.addAll(database.mainDAO().getAll());
                         }, 500);
                         Log.d("List123", "Working " + tweetList.size() + "  " + i);
@@ -263,7 +260,7 @@ public class FeedScreen extends AppCompatActivity {
                         FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
                         recyclerView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
-                    }
+                    }*/
                 }
 
 //                Collections.reverse(tweetList);

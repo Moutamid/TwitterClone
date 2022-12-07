@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="8dp"
-                android:text="Name"
+                android:text="\u0040BajwaShb_"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
@@ -59,7 +59,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="10dp"
-                android:text=" 17:20pm"
+                android:text="Thu, 22 Nov 2022, 17:20 pm"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
@@ -68,19 +68,30 @@
     </androidx.cardview.widget.CardView>
 
 
-    <TextView
-        android:id="@+id/details"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cardview"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:padding="8dp"
-        android:text="@string/message"
-        android:textColor="@color/black"
-        android:textSize="18sp"
+        android:scrollbarSize="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardview" />
+        app:layout_constraintTop_toBottomOf="@+id/cardview">
+
+        <TextView
+            android:id="@+id/details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardview"
+            android:text="@string/message2"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+    </ScrollView>
 
 
     <View
@@ -91,6 +102,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         app:layout_constraintVertical_bias="0.0" />
 
     <LinearLayout

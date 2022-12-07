@@ -1,7 +1,18 @@
 package com.android.cts.clone;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,21 +20,35 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.android.cts.clone.Adapters.SimpleViewPagerAdapter;
 import com.android.cts.clone.Model.TweetModel;
+import com.android.cts.clone.database.RoomDB;
+import com.androidnetworking.AndroidNetworking;
+import com.downloader.PRDownloader;
+import com.downloader.PRDownloaderConfig;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.fxn.stash.Stash;
+import com.mannan.translateapi.Language;
+import com.mannan.translateapi.TranslateAPI;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
 
 public class ViewPagerActivity  extends AppCompatActivity {
     ViewPager viewPager;
+    RoomDB database;
     private TweetModel model;
-    ArrayList<TweetModel> list;
+    List<TweetModel> list;
     int position;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_screen);
 
         viewPager = findViewById(R.id.viewPager);
+
+        database = RoomDB.getInstance(this);
 
         list = Stash.getArrayList("List", TweetModel.class);
         position = Stash.getInt("position", 0);
@@ -42,7 +67,6 @@ public class ViewPagerActivity  extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                viewPager.setCurrentItem(position);
             }
 
             @Override
@@ -52,4 +76,5 @@ public class ViewPagerActivity  extends AppCompatActivity {
         });
 
     }
+
 }
