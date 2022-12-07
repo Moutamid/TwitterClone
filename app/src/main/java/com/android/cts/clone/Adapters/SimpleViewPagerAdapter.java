@@ -130,7 +130,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         // pos = position;
        Log.d("position12", "ViewPager Adapter B : " + position);
        if (pos>0){
-           // crash at 2 but should b something like -2 or -1
+           // crash at 2 if pos>0 but if pos>1 its fine with some weird error on UI side but it should be something like -2 or -1
            pos = pos - 2;
        }
 
