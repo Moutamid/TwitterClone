@@ -135,11 +135,10 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
            @Override
            public void run() {
                //your method
-               position = getItemPosition(container);
-               Log.d("position12", "getItem : " + position);
+               int p = getItemPosition(container);
+               Log.d("position12", "getItem : " + p);
            }
        }, 0, 1000);//put here time 1000 milliseconds=1 second
-
         // pos = position;
        Log.d("position12", "ViewPager Adapter B : " + position);
        /*if (pos>0){
@@ -148,8 +147,12 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
        }*/
 
       // position = pos;
-
-        model = list.get(position);
+        pos = position;
+       /*if (pos > position){
+           position = pos;
+       }
+*/
+        model = list.get(pos);
 
         Log.d("position12", "ViewPager Adapter A : " + pos);
         Log.d("position12", "ViewPager Adapter P : " + position);
@@ -163,7 +166,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         copyBtn = view.findViewById(R.id.copy);
         translateBtn = view.findViewById(R.id.translate);
 
-        loadTweets(position);
+        loadTweets(pos);
 
        deleteBtn.setOnClickListener(v -> {
            database.mainDAO().Delete(model);
@@ -207,7 +210,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
            showDialog();
        });
 
-       Objects.requireNonNull(container).addView(view);
+       Objects.requireNonNull(container).addView(view, 0);
         return view;
     }
 
@@ -363,7 +366,8 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     @Override
     public int getItemPosition(@NonNull Object object) {
         //position = super.getItemPosition(object);
-        return super.getItemPosition(object);
+//        return super.getItemPosition(object);
+        return POSITION_NONE;
     }
 
     @Override

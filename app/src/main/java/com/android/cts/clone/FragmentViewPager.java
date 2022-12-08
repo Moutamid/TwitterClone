@@ -27,6 +27,8 @@ public class FragmentViewPager extends Fragment {
         return view;
     }
 
+
+
     public static FragmentViewPager newInstance(ArrayList<TweetModel> text, int pos) {
 
         FragmentViewPager f = new FragmentViewPager();
