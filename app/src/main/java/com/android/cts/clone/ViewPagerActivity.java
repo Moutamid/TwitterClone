@@ -37,7 +37,7 @@ public class ViewPagerActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: position: "+position);
         Log.d("position12", "Detail Screen : " + position);
 
-        SimpleViewPagerAdapter simpleViewPagerAdapter = new SimpleViewPagerAdapter(this, list, position);
+        SimpleViewPagerAdapter simpleViewPagerAdapter = new SimpleViewPagerAdapter(this, list, position, database);
         viewPager.setAdapter(simpleViewPagerAdapter);
         simpleViewPagerAdapter.notifyDataSetChanged();
         Log.d(TAG, "onCreateAfterViewpagerAdapterSet: listSize: "+list.size());

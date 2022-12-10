@@ -246,21 +246,32 @@ public class FeedScreen extends AppCompatActivity {
 
                         database.mainDAO().insert(model);
                         new Handler().postDelayed(() -> {
-                            // tweetList.clear();
-                            tweetList.addAll(database.mainDAO().getAll());
-                        }, 500);
-                        Log.d("List123", "Working " + tweetList.size() + "  " + i);
-                        // tweetList.add(model);
-                        FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
-                        recyclerView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    }*/
-                }
-                new Handler().postDelayed(() -> {
 //                            tweetList.clear();
                     tweetList.addAll(database.mainDAO().getAll());
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
                     Stash.put("List", tweetList);
+                    if (run) {
+                        feedListAdapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                        recyclerView.setAdapter(feedListAdapter);
+                        feedListAdapter.notifyDataSetChanged();
+                        run = false;
+                    } else {
+                        feedListAdapter.notifyItemRangeInserted(tweetList.size() - 1, result.data.size());
+                    }
+                }, 500);
+                    }*/
+                }
+
+                new Handler().postDelayed(() -> {
+//                    tweetList.clear();
+                    tweetList.addAll(database.mainDAO().getAll());
+                    Log.d(TAG, "success: tweetListSize: " + tweetList.size());
+                    Stash.put("List", tweetList);
+
+                    /*feedListAdapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                    recyclerView.setAdapter(feedListAdapter);
+                    feedListAdapter.notifyDataSetChanged();*/
+
                     if (run) {
                         feedListAdapter = new FeedListAdapter(FeedScreen.this, tweetList);
                         recyclerView.setAdapter(feedListAdapter);

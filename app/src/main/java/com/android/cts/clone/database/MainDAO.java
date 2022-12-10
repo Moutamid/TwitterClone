@@ -28,4 +28,7 @@ public interface MainDAO {
 
     @Query("DELETE FROM tweets")
     void Delete();
+
+    @Query("DELETE FROM tweets WHERE id= :id")
+    void Delete(long id);
 }

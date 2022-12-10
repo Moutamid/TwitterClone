@@ -73,7 +73,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE};
 
 
-    public SimpleViewPagerAdapter(Context ctx, List<TweetModel> modelDataArrayList, int position) {
+    public SimpleViewPagerAdapter(Context ctx, List<TweetModel> modelDataArrayList, int position, RoomDB database) {
         this.ctx = ctx;
         this.list = modelDataArrayList;
         this.position = position;
@@ -81,7 +81,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         Log.d(TAG, "SimpleViewPagerAdapter: position: "+position);
         Log.d("position12", "Detail Screen : " + position);
 
-        database = RoomDB.getInstance(ctx);
+        this.database = database;
 
         progressDialog = new ProgressDialog(ctx);
         progressDialog.setMessage("Downloading");
@@ -135,17 +135,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         }, 0, 1000);//put here time 1000 milliseconds=1 second
         // pos = position;
         Log.d("position12", "ViewPager Adapter B : " + position);
-       /*if (pos>0){
-           // crash at 2 if pos>0 but if pos>1 its fine with some weird error on UI side but it should be something like -2 or -1
-           pos = pos - 2;
-       }*/
 
-        // position = pos;
-        // pos = position;
-       /*if (pos > position){
-           position = pos;
-       }
-*/
         model = list.get(pos);
 
         Log.d(TAG, "instantiateItem: originalPosition: "+position);
@@ -168,8 +158,6 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         loadTweets(pos);
 
         deleteBtn.setOnClickListener(v -> {
-            database.mainDAO().Delete(model);
-            notifyDataSetChanged();
             //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
             /*startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
             finish();*/
@@ -177,16 +165,23 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
             if (p < list.size() - 1) {
                 loadTweets(p + 1);
                 list.remove(p);
+                database.mainDAO().Delete(list.get(pos).getId());
+                notifyDataSetChanged();
+            } else if (p == list.size()-1){
+                loadTweets(p - 1);
+                list.remove(p);
+                database.mainDAO().Delete(list.get(pos).getId());
+                notifyDataSetChanged();
             }
         });
 
         downloadBtn.setOnClickListener(v -> {
-            if (model.getPublicImageUrl().isEmpty()) {
+            if (list.get(pos).getPublicImageUrl().isEmpty()) {
                 Toast.makeText(ctx, "No Image/Video Found", Toast.LENGTH_SHORT).show();
             } else {
                 // Toast.makeText(this, model.getContentType(), Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions((Activity) ctx, permission, 1);
-                download();
+                download(pos);
                 // AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
             }
         });
@@ -211,15 +206,15 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         });
 
         translateBtn.setOnClickListener(v -> {
-            showDialog();
+            showDialog(pos);
         });
 
         Objects.requireNonNull(container).addView(view, 0);
         return view;
     }
 
-    private void download() {
-        PRDownloader.download(model.getPublicImageUrl(), file.getPath(), fileName)
+    private void download(int pos) {
+        PRDownloader.download(list.get(pos).getPublicImageUrl(), file.getPath(), fileName)
                 .build()
                 .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                     @Override
@@ -261,7 +256,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
                 });
     }
 
-    private void showDialog() {
+    private void showDialog(int pos) {
         final Dialog dialog = new Dialog(ctx);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.language_popup);
@@ -273,10 +268,11 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         Button orig = dialog.findViewById(R.id.orig);
         ImageButton cancel = dialog.findViewById(R.id.close);
 
-        currentText = model.getMessage();
+        currentText = list.get(pos).getMessage();
 
         orig.setOnClickListener(v -> {
-            message.setText(model.getMessage());
+            list.get(pos).setMessage(currentText);
+            notifyDataSetChanged();
             dialog.cancel();
         });
 
@@ -285,22 +281,22 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         });
 
         english.setOnClickListener(v -> {
-            translate("en");
+            translate("en", pos);
             dialog.cancel();
         });
 
         germany.setOnClickListener(v -> {
-            translate("de");
+            translate("de", pos);
             dialog.cancel();
         });
 
         french.setOnClickListener(v -> {
-            translate("fr");
+            translate("fr", pos);
             dialog.cancel();
         });
 
         spanish.setOnClickListener(v -> {
-            translate("es");
+            translate("es", pos);
             dialog.cancel();
         });
 
@@ -310,7 +306,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         dialog.getWindow().setGravity(Gravity.CENTER);
     }
 
-    private void translate(String code) {
+    private void translate(String code, int pos) {
         //TranslateAPI translate = new TranslateAPI();
 
         TranslateAPI translate = new TranslateAPI(
@@ -322,7 +318,9 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         translate.setTranslateListener(new TranslateAPI.TranslateListener() {
             @Override
             public void onSuccess(String translatedText) {
-                message.setText(translatedText);
+                list.get(pos).setMessage(translatedText);
+                notifyDataSetChanged();
+                //                message.setText(translatedText);
             }
 
             @Override
@@ -333,7 +331,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     }
 
     private void loadTweets(int i) {
-        model = list.get(i);
+       // model = list.get(i);
         Log.d("position12", "ViewPager load : " + i);
 
         //Folder Creating Into Phone Storage
