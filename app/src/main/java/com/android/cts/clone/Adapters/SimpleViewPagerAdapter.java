@@ -147,7 +147,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
        }*/
 
       // position = pos;
-        pos = position;
+        // pos = position;
        /*if (pos > position){
            position = pos;
        }
@@ -174,9 +174,9 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
            //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
             /*startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
             finish();*/
-           int p = position;
-           if (position < list.size()-1){
-               loadTweets(position + 1);
+           int p = pos;
+           if (p < list.size()-1){
+               loadTweets(p + 1);
                list.remove(p);
            }
        });
