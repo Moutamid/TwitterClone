@@ -42,6 +42,7 @@ import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
 import com.downloader.Progress;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
+import com.fxn.stash.Stash;
 import com.google.android.material.card.MaterialCardView;
 import com.mannan.translateapi.Language;
 import com.mannan.translateapi.TranslateAPI;
@@ -61,6 +62,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
     Context ctx;
     List<TweetModel> list;
+    List<Integer> positionList;
     TextView name, username, time, message;
     MaterialCardView deleteBtn, downloadBtn, copyBtn, translateBtn;
     File file;
@@ -165,11 +167,16 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
             if (p < list.size() - 1) {
                 loadTweets(p + 1);
                 list.remove(p);
+                positionList.add(p);
+                Stash.put("positionList", positionList);
+                Stash.put("isDeleted", true);
                 database.mainDAO().Delete(list.get(pos).getId());
                 notifyDataSetChanged();
             } else if (p == list.size()-1){
                 loadTweets(p - 1);
                 list.remove(p);
+                Stash.put("positionList", positionList);
+                Stash.put("isDeleted", true);
                 database.mainDAO().Delete(list.get(pos).getId());
                 notifyDataSetChanged();
             }

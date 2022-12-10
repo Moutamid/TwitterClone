@@ -63,6 +63,8 @@ public class FeedScreen extends AppCompatActivity {
     private TwitterSession session;
     SQLiteDatabase db;
     FeedListAdapter feedListAdapter;
+    List<Integer> positionList = new ArrayList<>();
+    boolean isDeleted = false;
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -88,6 +90,9 @@ public class FeedScreen extends AppCompatActivity {
         refresh = findViewById(R.id.refresh);
 
         database = RoomDB.getInstance(this);
+
+        positionList = Stash.getArrayList("positionList", Integer.class);
+        isDeleted = Stash.getBoolean("isDeleted", false);
 
         String se = null;
 
@@ -262,15 +267,12 @@ public class FeedScreen extends AppCompatActivity {
                     }*/
                 }
 
+
                 new Handler().postDelayed(() -> {
 //                    tweetList.clear();
                     tweetList.addAll(database.mainDAO().getAll());
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
                     Stash.put("List", tweetList);
-
-                    /*feedListAdapter = new FeedListAdapter(FeedScreen.this, tweetList);
-                    recyclerView.setAdapter(feedListAdapter);
-                    feedListAdapter.notifyDataSetChanged();*/
 
                     if (run) {
                         feedListAdapter = new FeedListAdapter(FeedScreen.this, tweetList);
@@ -279,6 +281,16 @@ public class FeedScreen extends AppCompatActivity {
                         run = false;
                     } else {
                         feedListAdapter.notifyItemRangeInserted(tweetList.size() - 1, result.data.size());
+                        if (isDeleted){
+                            Log.d("ListItemP", "list : Inside");
+                            for (int i=0; i<positionList.size(); i++){
+                                Log.d("ListItemP", "list : " + positionList.get(i));
+                                tweetList.remove(positionList.get(i));
+                                feedListAdapter.notifyItemRemoved(positionList.get(i));
+                            }
+                            Stash.clear("positionList");
+                            Stash.clear("isDeleted");
+                        }
                     }
                 }, 500);
 
@@ -304,6 +316,8 @@ public class FeedScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // tweetList.clear();
+        positionList = Stash.getArrayList("positionList", Integer.class);
+        isDeleted = Stash.getBoolean("isDeleted", false);
         refreshTweets();
     }
 
