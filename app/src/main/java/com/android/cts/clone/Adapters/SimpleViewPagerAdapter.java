@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,14 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager2.adapter.FragmentViewHolder;
 
-import com.android.cts.clone.DetailsScreen;
-import com.android.cts.clone.FragmentViewPager;
 import com.android.cts.clone.LoopingPagerAdapter;
 import com.android.cts.clone.Model.TweetModel;
 import com.android.cts.clone.R;
@@ -49,14 +42,12 @@ import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
 import com.downloader.Progress;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
-import com.fxn.stash.Stash;
 import com.google.android.material.card.MaterialCardView;
 import com.mannan.translateapi.Language;
 import com.mannan.translateapi.TranslateAPI;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -66,6 +57,7 @@ import java.util.TimerTask;
 import okhttp3.OkHttpClient;
 
 public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPagerAdapter {
+    private static final String TAG = "BUGGY";
 
     Context ctx;
     List<TweetModel> list;
@@ -81,33 +73,35 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE};
 
 
-     public SimpleViewPagerAdapter(Context ctx, List<TweetModel> modelDataArrayList, int position) {
+    public SimpleViewPagerAdapter(Context ctx, List<TweetModel> modelDataArrayList, int position) {
         this.ctx = ctx;
         this.list = modelDataArrayList;
         this.position = position;
-         Log.d("position12", "Detail Screen : " + position);
+        Log.d(TAG, "SimpleViewPagerAdapter: listSize: "+list.size());
+        Log.d(TAG, "SimpleViewPagerAdapter: position: "+position);
+        Log.d("position12", "Detail Screen : " + position);
 
-         database = RoomDB.getInstance(ctx);
+        database = RoomDB.getInstance(ctx);
 
-         progressDialog = new ProgressDialog(ctx);
-         progressDialog.setMessage("Downloading");
-         progressDialog.setCancelable(false);
+        progressDialog = new ProgressDialog(ctx);
+        progressDialog.setMessage("Downloading");
+        progressDialog.setCancelable(false);
 
-         PRDownloader.initialize(ctx);
+        PRDownloader.initialize(ctx);
 
-         PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
-                 .setReadTimeout(30_000)
-                 .setConnectTimeout(30_000)
-                 .build();
-         PRDownloader.initialize(ctx, config);
+        PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
+                .setReadTimeout(30_000)
+                .setConnectTimeout(30_000)
+                .build();
+        PRDownloader.initialize(ctx, config);
 
-         AndroidNetworking.initialize(ctx);
+        AndroidNetworking.initialize(ctx);
 
-         // Adding an Network Interceptor for Debugging purpose :
-         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                 .addNetworkInterceptor(new StethoInterceptor())
-                 .build();
-         AndroidNetworking.initialize(ctx, okHttpClient);
+        // Adding an Network Interceptor for Debugging purpose :
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
+        AndroidNetworking.initialize(ctx, okHttpClient);
 
     }
 
@@ -119,40 +113,45 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view==object;
+        return view == object;
     }
 
-   @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int pos) {
-        LayoutInflater layoutInflater= (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view=layoutInflater.inflate(R.layout.detail_screen,container,false);
+        LayoutInflater layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.detail_screen, container, false);
 
         // position = getItemPosition(container);
 
-       new Timer().scheduleAtFixedRate(new TimerTask() {
-           @Override
-           public void run() {
-               //your method
-               int p = getItemPosition(container);
-               Log.d("position12", "getItem : " + p);
-           }
-       }, 0, 1000);//put here time 1000 milliseconds=1 second
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                //your method
+                int p = getItemPosition(container);
+                Log.d("position12", "getItem : " + p);
+            }
+        }, 0, 1000);//put here time 1000 milliseconds=1 second
         // pos = position;
-       Log.d("position12", "ViewPager Adapter B : " + position);
+        Log.d("position12", "ViewPager Adapter B : " + position);
        /*if (pos>0){
            // crash at 2 if pos>0 but if pos>1 its fine with some weird error on UI side but it should be something like -2 or -1
            pos = pos - 2;
        }*/
 
-      // position = pos;
+        // position = pos;
         // pos = position;
        /*if (pos > position){
            position = pos;
        }
 */
         model = list.get(pos);
+
+        Log.d(TAG, "instantiateItem: originalPosition: "+position);
+        Log.d(TAG, "instantiateItem: originalPositionText: "+list.get(position).getMessage());
+        Log.d(TAG, "instantiateItem: currentPosition: "+pos);
+        Log.d(TAG, "instantiateItem: currentPositionText: "+list.get(pos).getMessage());
 
         Log.d("position12", "ViewPager Adapter A : " + pos);
         Log.d("position12", "ViewPager Adapter P : " + position);
@@ -168,49 +167,54 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
         loadTweets(pos);
 
-       deleteBtn.setOnClickListener(v -> {
-           database.mainDAO().Delete(model);
-           notifyDataSetChanged();
-           //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
+        deleteBtn.setOnClickListener(v -> {
+            database.mainDAO().Delete(model);
+            notifyDataSetChanged();
+            //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
             /*startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
             finish();*/
-           int p = pos;
-           if (p < list.size()-1){
-               loadTweets(p + 1);
-               list.remove(p);
-           }
-       });
+            int p = pos;
+            if (p < list.size() - 1) {
+                loadTweets(p + 1);
+                list.remove(p);
+            }
+        });
 
-       downloadBtn.setOnClickListener(v -> {
-           if (model.getPublicImageUrl().isEmpty()) {
-               Toast.makeText(ctx, "No Image/Video Found", Toast.LENGTH_SHORT).show();
-           } else {
-               // Toast.makeText(this, model.getContentType(), Toast.LENGTH_SHORT).show();
-               ActivityCompat.requestPermissions((Activity) ctx, permission, 1);
-               download();
-               // AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
-           }
-       });
+        downloadBtn.setOnClickListener(v -> {
+            if (model.getPublicImageUrl().isEmpty()) {
+                Toast.makeText(ctx, "No Image/Video Found", Toast.LENGTH_SHORT).show();
+            } else {
+                // Toast.makeText(this, model.getContentType(), Toast.LENGTH_SHORT).show();
+                ActivityCompat.requestPermissions((Activity) ctx, permission, 1);
+                download();
+                // AltexImageDownloader.writeToDisk(DetailsScreen.this, mediaEntities.get(0).mediaUrl, dirPath);
+            }
+        });
 
-       copyBtn.setOnClickListener(v -> {
-           int sdk = android.os.Build.VERSION.SDK_INT;
-           if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-               android.text.ClipboardManager clipboard = (android.text.ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-               clipboard.setText(message.getText().toString());
-               Toast.makeText(ctx, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-           } else {
-               android.content.ClipboardManager clipboard = (android.content.ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-               android.content.ClipData clip = android.content.ClipData.newPlainText("Tweet", message.getText().toString());
-               clipboard.setPrimaryClip(clip);
-               Toast.makeText(ctx, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-           }
-       });
+        copyBtn.setOnClickListener(v -> {
+            int sdk = android.os.Build.VERSION.SDK_INT;
+            if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
+                        ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboard.setText(list.get(pos).getMessage());
+//                clipboard.setText(message.getText().toString());
+                Log.d(TAG, "instantiateItem: copiedText: "+message.getText().toString());
+                Toast.makeText(ctx, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+            } else {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Tweet",
+                        list.get(pos).getMessage());
+                clipboard.setPrimaryClip(clip);
+                Log.d(TAG, "instantiateItem: copiedText: "+message.getText().toString());
+                Toast.makeText(ctx, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-       translateBtn.setOnClickListener(v -> {
-           showDialog();
-       });
+        translateBtn.setOnClickListener(v -> {
+            showDialog();
+        });
 
-       Objects.requireNonNull(container).addView(view, 0);
+        Objects.requireNonNull(container).addView(view, 0);
         return view;
     }
 
@@ -238,7 +242,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
                 .setOnProgressListener(new OnProgressListener() {
                     @Override
                     public void onProgress(Progress progress) {
-                        long n = progress.currentBytes*100/progress.totalBytes;
+                        long n = progress.currentBytes * 100 / progress.totalBytes;
                         progressDialog.setMessage("Downloading " + n + "%");
                     }
                 })
@@ -328,7 +332,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         });
     }
 
-    private void loadTweets(int i){
+    private void loadTweets(int i) {
         model = list.get(i);
         Log.d("position12", "ViewPager load : " + i);
 
@@ -340,7 +344,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
         Date myDate = new Date();
 
-        if (model.getContentType().equals("video")){
+        if (model.getContentType().equals("video")) {
             fileName = timeStampFormat.format(myDate) + "i.mp4";
         } else {
             fileName = timeStampFormat.format(myDate) + "i.jpg";
@@ -355,7 +359,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         time.setText(model.getCreated_at());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            if (!model.getPublicImageUrl().isEmpty()){
+            if (!model.getPublicImageUrl().isEmpty()) {
                 downloadBtn.setVisibility(View.VISIBLE);
             } else {
                 downloadBtn.setVisibility(View.GONE);

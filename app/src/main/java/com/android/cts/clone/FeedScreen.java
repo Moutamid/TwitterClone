@@ -1,6 +1,5 @@
 package com.android.cts.clone;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,9 +35,7 @@ import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,7 +43,8 @@ import retrofit2.Call;
 
 
 public class FeedScreen extends AppCompatActivity {
-
+    private static final String TAG = "BUGGY";
+    boolean run = true;
     RoomDB database;
     List<TweetModel> list;
     SimpleDateFormat formatter;
@@ -64,6 +62,7 @@ public class FeedScreen extends AppCompatActivity {
     private TweetTimelineRecyclerViewAdapter adapter;
     private TwitterSession session;
     SQLiteDatabase db;
+    FeedListAdapter feedListAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -71,7 +70,7 @@ public class FeedScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
+        Log.d(TAG, "onCreate: started");
         Twitter.initialize(this);
         setContentView(R.layout.activity_feed_screen);
         TwitterConfig config = new TwitterConfig.Builder(this)
@@ -138,16 +137,17 @@ public class FeedScreen extends AppCompatActivity {
 
         // refreshTweets();
 
-        if (list.size() >= 1 && list != null){
-            Log.d("List123", "List offline "+list.size());
+        if (list.size() >= 1 && list != null) {
+            Log.d("List123", "List offline " + list.size());
             FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         } else {
-            Log.d("List123", "List zero "+list.size());
+            Log.d("List123", "List zero " + list.size());
             refreshTweets();
         }
-
+        Log.d(TAG, "onCreate: listSize: " + list.size());
+        Log.d(TAG, "onCreate: tweetList: " + tweetList.size());
         refresh.setOnClickListener(v -> {
             tweetList.clear();
             refreshTweets();
@@ -193,6 +193,7 @@ public class FeedScreen extends AppCompatActivity {
         tweetCall.enqueue(new Callback<List<Tweet>>() {
             @Override
             public void success(Result<List<Tweet>> result) {
+                Log.d(TAG, "success: resultListSize: " + result.data.size());
                 for (int i = 0; i < result.data.size(); i++) {
                     Tweet tweet = result.data.get(i);
 
@@ -217,7 +218,7 @@ public class FeedScreen extends AppCompatActivity {
 
                     TweetModel model = new TweetModel(
                             tweet.id,
-                            "@"+ tweet.user.screenName,
+                            "@" + tweet.user.screenName,
                             tweet.user.name,
                             tweet.user.email,
                             tweet.retweeted ? tweet.retweetedStatus.text : tweet.text,
@@ -227,13 +228,6 @@ public class FeedScreen extends AppCompatActivity {
                             tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).type : ""
                     );
                     database.mainDAO().insert(model);
-                    new Handler().postDelayed(() -> {
-//                            tweetList.clear();
-                        tweetList.addAll(database.mainDAO().getAll());
-                        FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, tweetList);
-                        recyclerView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    }, 500);
                     Log.d("List123", "Working " + tweetList.size() + "  " + i);
                     // tweetList.add(model);
 
@@ -262,6 +256,21 @@ public class FeedScreen extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     }*/
                 }
+                new Handler().postDelayed(() -> {
+//                            tweetList.clear();
+                    tweetList.addAll(database.mainDAO().getAll());
+                    Log.d(TAG, "success: tweetListSize: " + tweetList.size());
+                    Stash.put("List", tweetList);
+                    if (run) {
+                        feedListAdapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                        recyclerView.setAdapter(feedListAdapter);
+                        feedListAdapter.notifyDataSetChanged();
+                        run = false;
+                    } else {
+                        feedListAdapter.notifyItemRangeInserted(tweetList.size() - 1, result.data.size());
+                    }
+                }, 500);
+
 
 //                Collections.reverse(tweetList);
 
