@@ -36,6 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -217,16 +218,33 @@ public class FeedScreen extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    Log.d("List123", "dateE : " + dateE);
+                    /*Log.d("List123", "dateE : " + dateE);
                     Log.d("List123", "dateS : " + dateS);
-                    Log.d("List123", "enddate : " + endTime);
+                    Log.d("List123", "enddate : " + endTime);*/
+
+                    Log.d(TAG, "retweetedStatus truncated : " + tweet.truncated);
+                    String message = tweet.text;
+                    Log.d(TAG, "retweetedStatus text : " + message.indexOf("RT") + " " + message.lastIndexOf("...") + " " + message.length());
+                    Log.d(TAG, "text : " + tweet.text);
+                    Log.d(TAG, "Time : " + date);
+
+                    try {
+                        if (message.indexOf("RT") == 0 || message.lastIndexOf("...") == message.length()-4){
+                            message = tweet.retweetedStatus.text;
+                            if (message == null){
+                                message = tweet.text;
+                            }
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
 
                     TweetModel model = new TweetModel(
                             tweet.id,
                             "@" + tweet.user.screenName,
                             tweet.user.name,
                             tweet.user.email,
-                            tweet.retweeted ? tweet.retweetedStatus.text : tweet.text,
+                            message,
                             date,
                             tweet.user.profileImageUrl,
                             tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).mediaUrlHttps : "",
@@ -271,7 +289,9 @@ public class FeedScreen extends AppCompatActivity {
                 new Handler().postDelayed(() -> {
 //                    tweetList.clear();
                     tweetList.addAll(database.mainDAO().getAll());
+                    // ArrayList<TweetModel> newList = new ArrayList<>(new HashSet<>(tweetList));
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
+                    // Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", tweetList);
 
                     if (run) {
@@ -296,8 +316,6 @@ public class FeedScreen extends AppCompatActivity {
 
 
 //                Collections.reverse(tweetList);
-
-//                ArrayList<TweetModel> newList = new ArrayList<>(new HashSet<>(tweetList));
 
                 // tweetList.clear();
 
