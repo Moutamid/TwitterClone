@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.util.StringUtil;
 
 import com.android.cts.clone.Adapters.FeedListAdapter;
 import com.android.cts.clone.Model.TweetModel;
@@ -32,11 +33,14 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -230,9 +234,13 @@ public class FeedScreen extends AppCompatActivity {
 
                     try {
                         if (message.indexOf("RT") == 0 || message.lastIndexOf("...") == message.length()-4){
+                            String text = tweet.text;
+                            String s = StringUtils.substringBetween(text, "@", " ");
                             message = tweet.retweetedStatus.text;
                             if (message == null){
                                 message = tweet.text;
+                            } else {
+                                message = "RT @" + s + " " + tweet.retweetedStatus.text;
                             }
                         }
                     } catch (Exception e){
@@ -289,18 +297,18 @@ public class FeedScreen extends AppCompatActivity {
                 new Handler().postDelayed(() -> {
 //                    tweetList.clear();
                     tweetList.addAll(database.mainDAO().getAll());
-                    // ArrayList<TweetModel> newList = new ArrayList<>(new HashSet<>(tweetList));
+                    List<TweetModel> newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
-                    // Log.d(TAG, "success: newListSize: " + newList.size());
+                    Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", tweetList);
 
                     if (run) {
-                        feedListAdapter = new FeedListAdapter(FeedScreen.this, tweetList);
+                        feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
                         recyclerView.setAdapter(feedListAdapter);
                         feedListAdapter.notifyDataSetChanged();
                         run = false;
                     } else {
-                        feedListAdapter.notifyItemRangeInserted(tweetList.size() - 1, result.data.size());
+                        feedListAdapter.notifyItemRangeInserted(newList.size() - 1, result.data.size());
                         if (isDeleted){
                             Log.d("ListItemP", "list : Inside");
                             for (int i=0; i<positionList.size(); i++){
