@@ -115,11 +115,10 @@ public class DetailsScreen extends AppCompatActivity {
         downloadBtn = findViewById(R.id.download);
         copyBtn = findViewById(R.id.copy);
         translateBtn = findViewById(R.id.translate);
-        view = findViewById(R.id.view);
 
-        loadTweets(position);
+        // loadTweets(position);
 
-        view.setOnTouchListener(new OnSwipeTouchListener(DetailsScreen.this){
+       /* view.setOnTouchListener(new OnSwipeTouchListener(DetailsScreen.this){
             @Override
             public void onSwipeRight() {
                 super.onSwipeRight();
@@ -135,7 +134,7 @@ public class DetailsScreen extends AppCompatActivity {
                     loadTweets(position + 1);
                 }
             }
-        });
+        }); */
 
         //file Creating With Folder & Fle Name
         //file = new File(dirPath, fileName);
@@ -159,7 +158,7 @@ public class DetailsScreen extends AppCompatActivity {
             finish();*/
             int p = position;
             if (position < list.size()-1){
-                loadTweets(position + 1);
+                //loadTweets(position + 1);
                 list.remove(p);
             }
         });
@@ -236,7 +235,7 @@ public class DetailsScreen extends AppCompatActivity {
                     }
                 });
     }
-
+/*
     private void loadTweets(int i){
         model = list.get(i);
         Log.d("position12", "ViewPager load : " + i);
@@ -266,7 +265,7 @@ public class DetailsScreen extends AppCompatActivity {
         } else {
             downloadBtn.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
