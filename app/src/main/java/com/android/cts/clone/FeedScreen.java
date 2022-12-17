@@ -149,7 +149,8 @@ public class FeedScreen extends AppCompatActivity {
 
         if (list.size() >= 1 && list != null) {
             Log.d("List123", "List offline " + list.size());
-            FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, list);
+            List<TweetModel> newList = new ArrayList<>(new LinkedHashSet<>(list));
+            FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, newList);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         } else {
@@ -159,7 +160,9 @@ public class FeedScreen extends AppCompatActivity {
         Log.d(TAG, "onCreate: listSize: " + list.size());
         Log.d(TAG, "onCreate: tweetList: " + tweetList.size());
         refresh.setOnClickListener(v -> {
-            tweetList.clear();
+            // tweetList.clear();
+            positionList = Stash.getArrayList("positionList", Integer.class);
+            isDeleted = Stash.getBoolean("isDeleted", false);
             refreshTweets();
         });
     }
