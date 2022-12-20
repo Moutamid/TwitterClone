@@ -33,6 +33,7 @@ public class ViewPagerActivity extends AppCompatActivity {
 
         list = Stash.getArrayList("List", TweetModel.class);
         position = Stash.getInt("position", 0);
+
         Log.d(TAG, "onCreate: listSize: "+list.size());
         Log.d(TAG, "onCreate: position: "+position);
         Log.d("position12", "Detail Screen : " + position);

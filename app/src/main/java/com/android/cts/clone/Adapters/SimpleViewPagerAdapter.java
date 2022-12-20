@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -49,6 +50,7 @@ import com.mannan.translateapi.TranslateAPI;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -91,6 +93,8 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
         PRDownloader.initialize(ctx);
 
+        positionList = new ArrayList<>();
+
         PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
                 .setReadTimeout(30_000)
                 .setConnectTimeout(30_000)
@@ -127,7 +131,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
         // position = getItemPosition(container);
 
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+        /*new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 //your method
@@ -135,7 +139,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
                 Log.d("position12", "getItem : " + p);
             }
         }, 0, 1000);//put here time 1000 milliseconds=1 second
-        // pos = position;
+        // pos = position;*/
         Log.d("position12", "ViewPager Adapter B : " + position);
 
         model = list.get(pos);
@@ -158,7 +162,6 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         translateBtn = view.findViewById(R.id.translate);
 
         loadTweets(pos);
-
         deleteBtn.setOnClickListener(v -> {
             //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
             /*startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
@@ -168,15 +171,21 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
                 loadTweets(p + 1);
                 list.remove(p);
                 positionList.add(p);
-                Stash.put("positionList", positionList);
-                Stash.put("isDeleted", true);
+                new Handler().postDelayed(() ->{
+                    Stash.put("positionList", positionList);
+                    Stash.put("isDeleted", true);
+                }, 500);
+
                 database.mainDAO().Delete(list.get(pos).getId());
                 notifyDataSetChanged();
             } else if (p == list.size()-1){
                 loadTweets(p - 1);
                 list.remove(p);
-                Stash.put("positionList", positionList);
-                Stash.put("isDeleted", true);
+                positionList.add(p);
+                new Handler().postDelayed(() ->{
+                    Stash.put("positionList", positionList);
+                    Stash.put("isDeleted", true);
+                }, 500);
                 database.mainDAO().Delete(list.get(pos).getId());
                 notifyDataSetChanged();
             }
@@ -213,6 +222,8 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         });
 
         translateBtn.setOnClickListener(v -> {
+            currentText = list.get(pos).getMessage();
+            Toast.makeText(ctx, Stash.getString("OriginalText"), Toast.LENGTH_SHORT).show();
             showDialog(pos);
         });
 
@@ -221,6 +232,16 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     }
 
     private void download(int pos) {
+
+        SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
+        Date myDate = new Date();
+
+        Toast.makeText(ctx, list.get(pos).getContentType(), Toast.LENGTH_SHORT).show();
+        if (list.get(pos).getContentType().equals("video")) {
+            fileName = timeStampFormat.format(myDate) + "i.mp4";
+        } else {
+            fileName = timeStampFormat.format(myDate) + "i.jpg";
+        }
         PRDownloader.download(list.get(pos).getPublicImageUrl(), file.getPath(), fileName)
                 .build()
                 .setOnStartOrResumeListener(new OnStartOrResumeListener() {
@@ -275,10 +296,8 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         Button orig = dialog.findViewById(R.id.orig);
         ImageButton cancel = dialog.findViewById(R.id.close);
 
-        currentText = list.get(pos).getMessage();
-
         orig.setOnClickListener(v -> {
-            list.get(pos).setMessage(currentText);
+            list.get(pos).setMessage(Stash.getString("OriginalText"));
             notifyDataSetChanged();
             dialog.cancel();
         });
@@ -327,7 +346,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
             public void onSuccess(String translatedText) {
                 list.get(pos).setMessage(translatedText);
                 notifyDataSetChanged();
-                //                message.setText(translatedText);
+                // message.setText(translatedText);
             }
 
             @Override
@@ -346,21 +365,11 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
             file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         }
 
-        SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
-        Date myDate = new Date();
-
-        if (model.getContentType().equals("video")) {
-            fileName = timeStampFormat.format(myDate) + "i.mp4";
-        } else {
-            fileName = timeStampFormat.format(myDate) + "i.jpg";
-        }
-
         position = i;
-
+        Stash.put("OriginalText", list.get(i).getMessage());
         name.setText(model.getName());
         username.setText(model.getUsername());
         message.setText(model.getMessage());
-
         time.setText(model.getCreated_at());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {

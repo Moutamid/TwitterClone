@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import retrofit2.Call;
 
@@ -70,6 +71,7 @@ public class FeedScreen extends AppCompatActivity {
     FeedListAdapter feedListAdapter;
     List<Integer> positionList = new ArrayList<>();
     boolean isDeleted = false;
+    List<TweetModel> newList = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -127,6 +129,8 @@ public class FeedScreen extends AppCompatActivity {
                     s = formatter.format(sessionTime);
                     Stash.put("loginSession", s);
                     database.mainDAO().Delete();
+                    Stash.clear("positionList");
+                    Stash.clear("isDeleted");
                 }
             }
         });
@@ -155,6 +159,8 @@ public class FeedScreen extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         } else {
             Log.d("List123", "List zero " + list.size());
+            positionList = Stash.getArrayList("positionList", Integer.class);
+            isDeleted = Stash.getBoolean("isDeleted", false);
             refreshTweets();
         }
         Log.d(TAG, "onCreate: listSize: " + list.size());
@@ -245,6 +251,13 @@ public class FeedScreen extends AppCompatActivity {
                             } else {
                                 message = "RT @" + s + " " + tweet.retweetedStatus.text;
                             }
+                        } else {
+                            message = tweet.quotedStatus.text;
+                            if (message == null){
+                                message = tweet.text;
+                            } else {
+                                message = tweet.quotedStatus.text;
+                            }
                         }
                     } catch (Exception e){
                         e.printStackTrace();
@@ -299,12 +312,30 @@ public class FeedScreen extends AppCompatActivity {
 
                 new Handler().postDelayed(() -> {
 //                    tweetList.clear();
+                    tweetList.clear();
                     tweetList.addAll(database.mainDAO().getAll());
-                    List<TweetModel> newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
+                    newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
                     Log.d(TAG, "success: newListSize: " + newList.size());
-                    Stash.put("List", tweetList);
+                    Stash.put("List", newList);
 
+                    /*feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
+                    recyclerView.setAdapter(feedListAdapter);
+                    if (newList.size()==0){
+                        feedListAdapter.notifyDataSetChanged();
+                    } else {
+                        feedListAdapter.notifyItemRangeInserted(newList.size() - 1, result.data.size());
+                    }
+                    if (isDeleted) {
+                        Log.d("ListItemP", "list : Inside");
+                        for (int i=0; i<positionList.size(); i++){
+                            Log.d("ListItemP", "list : " + positionList.get(i));
+                            tweetList.remove(positionList.get(i));
+                            feedListAdapter.notifyItemRemoved(positionList.get(i));
+                        }
+                        Stash.clear("positionList");
+                        Stash.clear("isDeleted");
+                    }*/
                     if (run) {
                         feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
                         recyclerView.setAdapter(feedListAdapter);
@@ -312,19 +343,8 @@ public class FeedScreen extends AppCompatActivity {
                         run = false;
                     } else {
                         feedListAdapter.notifyItemRangeInserted(newList.size() - 1, result.data.size());
-                        if (isDeleted){
-                            Log.d("ListItemP", "list : Inside");
-                            for (int i=0; i<positionList.size(); i++){
-                                Log.d("ListItemP", "list : " + positionList.get(i));
-                                tweetList.remove(positionList.get(i));
-                                feedListAdapter.notifyItemRemoved(positionList.get(i));
-                            }
-                            Stash.clear("positionList");
-                            Stash.clear("isDeleted");
-                        }
                     }
                 }, 500);
-
 
 //                Collections.reverse(tweetList);
 
@@ -340,6 +360,14 @@ public class FeedScreen extends AppCompatActivity {
         });
     }
 
+    private List<TweetModel> removeDuplicates(ArrayList<TweetModel> tweetList) {
+        Set<TweetModel> set = new LinkedHashSet<>();
+        set.addAll(tweetList);
+        tweetList.clear();
+        tweetList.addAll(set);
+        return tweetList;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onResume() {
@@ -347,6 +375,20 @@ public class FeedScreen extends AppCompatActivity {
         // tweetList.clear();
         positionList = Stash.getArrayList("positionList", Integer.class);
         isDeleted = Stash.getBoolean("isDeleted", false);
+        if (isDeleted){
+            Log.d("ListItemP", "list : Inside");
+            for (int i=0; i<positionList.size(); i++){
+                Log.d("ListItemP", "list : " + positionList.get(i));
+                tweetList.remove(positionList.get(i));
+                newList.remove(positionList.get(i));
+                feedListAdapter.notifyItemRemoved(positionList.get(i));
+            }
+            Stash.clear("positionList");
+            Stash.clear("isDeleted");
+            Stash.clear("List");
+        }
+//        Stash.clear("List");
+//        database.mainDAO().Delete();
         refreshTweets();
     }
 
