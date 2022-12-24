@@ -219,14 +219,14 @@ public class FeedScreen extends AppCompatActivity {
                     String date = null;
 
                     try {
-                        date = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault())
-                                .format(new SimpleDateFormat("E MMM dd hh:mm:ss Z yyyy").parse(tweet.createdAt));
+                        date = new SimpleDateFormat("E, MMM dd yyyy, HH:mm aa", Locale.getDefault())
+                                .format(new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(tweet.createdAt));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
                     try {
-                        dateE = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault()).parse(date);
+                        dateE = new SimpleDateFormat("E, MMM dd yyyy, HH:mm aa", Locale.getDefault()).parse(date);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -319,31 +319,38 @@ public class FeedScreen extends AppCompatActivity {
                     Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", newList);
 
-                    /*feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
-                    recyclerView.setAdapter(feedListAdapter);
-                    if (newList.size()==0){
+
+                    /*if (newList.size()==0){
+                        feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
+                        recyclerView.setAdapter(feedListAdapter);
                         feedListAdapter.notifyDataSetChanged();
                     } else {
                         feedListAdapter.notifyItemRangeInserted(newList.size() - 1, result.data.size());
-                    }
-                    if (isDeleted) {
-                        Log.d("ListItemP", "list : Inside");
-                        for (int i=0; i<positionList.size(); i++){
-                            Log.d("ListItemP", "list : " + positionList.get(i));
-                            tweetList.remove(positionList.get(i));
-                            feedListAdapter.notifyItemRemoved(positionList.get(i));
-                        }
-                        Stash.clear("positionList");
-                        Stash.clear("isDeleted");
                     }*/
-                    if (run) {
+
+                    feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
+                    recyclerView.setAdapter(feedListAdapter);
+                    feedListAdapter.notifyDataSetChanged();
+
+                    /*if (run) {
                         feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
                         recyclerView.setAdapter(feedListAdapter);
                         feedListAdapter.notifyDataSetChanged();
                         run = false;
                     } else {
                         feedListAdapter.notifyItemRangeInserted(newList.size() - 1, result.data.size());
-                    }
+                    }*/
+//                    if (isDeleted) {
+//                        Log.d("ListItemP", "list : Inside");
+//                        for (int i=0; i<positionList.size(); i++){
+//                            Log.d("ListItemP", "list : " + positionList.get(i));
+//                            tweetList.remove(positionList.get(i));
+//                            feedListAdapter.notifyItemRemoved(positionList.get(i));
+//                        }
+//                        Stash.clear("positionList");
+//                        Stash.clear("isDeleted");
+//                    }
+
                 }, 500);
 
 //                Collections.reverse(tweetList);
@@ -375,7 +382,7 @@ public class FeedScreen extends AppCompatActivity {
         // tweetList.clear();
         positionList = Stash.getArrayList("positionList", Integer.class);
         isDeleted = Stash.getBoolean("isDeleted", false);
-        if (isDeleted){
+        if (isDeleted) {
             Log.d("ListItemP", "list : Inside");
             for (int i=0; i<positionList.size(); i++){
                 Log.d("ListItemP", "list : " + positionList.get(i));
@@ -389,7 +396,11 @@ public class FeedScreen extends AppCompatActivity {
         }
 //        Stash.clear("List");
 //        database.mainDAO().Delete();
-        refreshTweets();
+        boolean isStarted = Stash.getBoolean("isStarted", false);
+        if (!isStarted){
+            refreshTweets();
+            Stash.put("isStarted", false);
+        }
     }
 
     @Override

@@ -222,8 +222,6 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         });
 
         translateBtn.setOnClickListener(v -> {
-            currentText = list.get(pos).getMessage();
-            Toast.makeText(ctx, Stash.getString("OriginalText"), Toast.LENGTH_SHORT).show();
             showDialog(pos);
         });
 
@@ -290,14 +288,11 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         dialog.setContentView(R.layout.language_popup);
 
         Button english = dialog.findViewById(R.id.eng);
-        Button germany = dialog.findViewById(R.id.grm);
-        Button french = dialog.findViewById(R.id.frc);
-        Button spanish = dialog.findViewById(R.id.span);
         Button orig = dialog.findViewById(R.id.orig);
         ImageButton cancel = dialog.findViewById(R.id.close);
 
         orig.setOnClickListener(v -> {
-            list.get(pos).setMessage(Stash.getString("OriginalText"));
+            list.get(pos).setMessage(currentText);
             notifyDataSetChanged();
             dialog.cancel();
         });
@@ -307,22 +302,8 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         });
 
         english.setOnClickListener(v -> {
+            currentText = list.get(pos).getMessage();
             translate("en", pos);
-            dialog.cancel();
-        });
-
-        germany.setOnClickListener(v -> {
-            translate("de", pos);
-            dialog.cancel();
-        });
-
-        french.setOnClickListener(v -> {
-            translate("fr", pos);
-            dialog.cancel();
-        });
-
-        spanish.setOnClickListener(v -> {
-            translate("es", pos);
             dialog.cancel();
         });
 
@@ -366,7 +347,6 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         }
 
         position = i;
-        Stash.put("OriginalText", list.get(i).getMessage());
         name.setText(model.getName());
         username.setText(model.getUsername());
         message.setText(model.getMessage());

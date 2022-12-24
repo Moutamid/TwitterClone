@@ -63,4 +63,9 @@ public class ViewPagerActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Stash.put("isStarted", false);
+    }
 }

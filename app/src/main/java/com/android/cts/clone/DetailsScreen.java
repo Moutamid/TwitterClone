@@ -281,9 +281,6 @@ public class DetailsScreen extends AppCompatActivity {
         dialog.setContentView(R.layout.language_popup);
 
         Button english = dialog.findViewById(R.id.eng);
-        Button germany = dialog.findViewById(R.id.grm);
-        Button french = dialog.findViewById(R.id.frc);
-        Button spanish = dialog.findViewById(R.id.span);
         Button orig = dialog.findViewById(R.id.orig);
         ImageButton cancel = dialog.findViewById(R.id.close);
 
@@ -300,21 +297,6 @@ public class DetailsScreen extends AppCompatActivity {
 
         english.setOnClickListener(v -> {
             translate("en");
-            dialog.cancel();
-        });
-
-        germany.setOnClickListener(v -> {
-            translate("de");
-            dialog.cancel();
-        });
-
-        french.setOnClickListener(v -> {
-            translate("fr");
-            dialog.cancel();
-        });
-
-        spanish.setOnClickListener(v -> {
-            translate("es");
             dialog.cancel();
         });
 

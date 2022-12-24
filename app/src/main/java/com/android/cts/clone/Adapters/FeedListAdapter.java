@@ -56,6 +56,8 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
                 Log.d(TAG, "onClick: AdapterPosition: "+holder.getAdapterPosition());
                 mContext.startActivity(intent);
                 Log.d("position12", "Feed Adapter : " + holder.getAdapterPosition());
+
+                Stash.put("isStarted", true);
             }
         });
     }
