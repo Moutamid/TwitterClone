@@ -128,7 +128,7 @@ public class FeedScreen extends AppCompatActivity {
                     sessionTime = new Date();
                     s = formatter.format(sessionTime);
                     Stash.put("loginSession", s);
-                    database.mainDAO().Delete();
+                    // database.mainDAO().Delete();
                     Stash.clear("positionList");
                     Stash.clear("isDeleted");
                 }
@@ -246,17 +246,22 @@ public class FeedScreen extends AppCompatActivity {
                             String text = tweet.text;
                             String s = StringUtils.substringBetween(text, "@", " ");
                             message = tweet.retweetedStatus.text;
-                            if (message == null){
+                            if (message == null) {
                                 message = tweet.text;
                             } else {
                                 message = "RT @" + s + " " + tweet.retweetedStatus.text;
                             }
                         } else {
+                            String text = tweet.text;
+                            String s = StringUtils.substringBetween(text, "@", " ");
                             message = tweet.quotedStatus.text;
                             if (message == null){
                                 message = tweet.text;
                             } else {
-                                message = tweet.quotedStatus.text;
+                                Log.d("Quttoed TExt", tweet.text);
+                                Log.d("Quttoed TExt", "s : " + s);
+                                message = "@" + s + " " + tweet.quotedStatus.text;
+                                Log.d("Quttoed TExt", "message : " + message);
                             }
                         }
                     } catch (Exception e){
