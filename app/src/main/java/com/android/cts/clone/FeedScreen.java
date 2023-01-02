@@ -38,6 +38,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -117,7 +120,7 @@ public class FeedScreen extends AppCompatActivity {
             s = formatter.format(sessionTime);
             Stash.put("loginSession", s);
             Log.d("List123", "Stash S : " + s);
-            database.mainDAO().Delete();
+            // database.mainDAO().Delete();
         }
 
         MyApplication.getInstance().setOnVisibilityChangeListener(new MyApplication.ValueChangeListener() {
@@ -206,10 +209,11 @@ public class FeedScreen extends AppCompatActivity {
                 false, false, true); */
         Log.d("List123", "inside Function");
 
-        Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(170,
-                null, null, false, true, true, true);
+        Call<List<Tweet>> tweetCall = twitterApiClient.getStatusesService().homeTimeline(100,
+                null, null, false, false, false, true);
 
         tweetCall.enqueue(new Callback<List<Tweet>>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void success(Result<List<Tweet>> result) {
                 Log.d(TAG, "success: resultListSize: " + result.data.size());
@@ -219,14 +223,14 @@ public class FeedScreen extends AppCompatActivity {
                     String date = null;
 
                     try {
-                        date = new SimpleDateFormat("E, MMM dd yyyy, HH:mm aa", Locale.getDefault())
-                                .format(new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(tweet.createdAt));
+                        date = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault())
+                                .format(new SimpleDateFormat("E MMM dd hh:mm:ss Z yyyy").parse(tweet.createdAt));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
                     try {
-                        dateE = new SimpleDateFormat("E, MMM dd yyyy, HH:mm aa", Locale.getDefault()).parse(date);
+                        dateE = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault()).parse(date);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -258,9 +262,7 @@ public class FeedScreen extends AppCompatActivity {
                             if (message == null){
                                 message = tweet.text;
                             } else {
-                                Log.d("Quttoed TExt", tweet.text);
-                                Log.d("Quttoed TExt", "s : " + s);
-                                message = "@" + s + " " + tweet.quotedStatus.text;
+                                message = tweet.quotedStatus.text;
                                 Log.d("Quttoed TExt", "message : " + message);
                             }
                         }
@@ -277,7 +279,8 @@ public class FeedScreen extends AppCompatActivity {
                             date,
                             tweet.user.profileImageUrl,
                             tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).mediaUrlHttps : "",
-                            tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).type : ""
+                            tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).type : "",
+                            dateE.getTime()
                     );
                     database.mainDAO().insert(model);
                     Log.d("List123", "Working " + tweetList.size() + "  " + i);
@@ -314,16 +317,15 @@ public class FeedScreen extends AppCompatActivity {
                     }*/
                 }
 
-
+                Stash.clear("List");
                 new Handler().postDelayed(() -> {
-//                    tweetList.clear();
                     tweetList.clear();
                     tweetList.addAll(database.mainDAO().getAll());
                     newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
+                    Collections.sort(newList, Comparator.comparing(TweetModel::getTimestamps));
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
                     Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", newList);
-
 
                     /*if (newList.size()==0){
                         feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
@@ -355,7 +357,6 @@ public class FeedScreen extends AppCompatActivity {
 //                        Stash.clear("positionList");
 //                        Stash.clear("isDeleted");
 //                    }
-
                 }, 500);
 
 //                Collections.reverse(tweetList);
@@ -372,19 +373,7 @@ public class FeedScreen extends AppCompatActivity {
         });
     }
 
-    private List<TweetModel> removeDuplicates(ArrayList<TweetModel> tweetList) {
-        Set<TweetModel> set = new LinkedHashSet<>();
-        set.addAll(tweetList);
-        tweetList.clear();
-        tweetList.addAll(set);
-        return tweetList;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // tweetList.clear();
+    private void clear(){
         positionList = Stash.getArrayList("positionList", Integer.class);
         isDeleted = Stash.getBoolean("isDeleted", false);
         if (isDeleted) {
@@ -399,6 +388,14 @@ public class FeedScreen extends AppCompatActivity {
             Stash.clear("isDeleted");
             Stash.clear("List");
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // tweetList.clear();
+        clear();
 //        Stash.clear("List");
 //        database.mainDAO().Delete();
         boolean isStarted = Stash.getBoolean("isStarted", false);

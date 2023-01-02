@@ -1,6 +1,7 @@
 package com.android.cts.clone;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -17,5 +18,11 @@ public class FeedActivity extends ListActivity {
         } else {
             Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        startActivity(new Intent(FeedActivity.this, FeedScreen.class));
     }
 }

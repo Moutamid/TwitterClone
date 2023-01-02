@@ -20,8 +20,8 @@ public interface MainDAO {
     @Query("SELECT * FROM tweets ORDER BY created_at ASC")
     List<TweetModel> getAll();
 
-    @Query("UPDATE tweets SET name = :name, username = :username, email= :email, message= :message, created_at= :created_at, imageUrl= :imageUrl, profile_image_url= :profile_image_url  where id = :id")
-    void update(int id, String name, String username, String email, String message, String created_at, String imageUrl, String profile_image_url);
+    @Query("UPDATE tweets SET name = :name, username = :username, email= :email, message= :message, created_at= :created_at, imageUrl= :imageUrl, profile_image_url= :profile_image_url, timestamps= :timestamps  where id = :id")
+    void update(int id, String name, String username, String email, String message, String created_at, String imageUrl, String profile_image_url, long timestamps);
 
     @Delete
     void Delete(TweetModel tweet);

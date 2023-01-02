@@ -27,6 +27,9 @@ public class TweetModel implements Serializable {
     @ColumnInfo(name = "Created_At")
     private String created_at = "";
 
+    @ColumnInfo(name = "timestamps")
+    private long timestamps = 0;
+
     @ColumnInfo(name = "ImageUrl")
     private String imageUrl = "";
 
@@ -42,7 +45,7 @@ public class TweetModel implements Serializable {
     public TweetModel() {
     }
 
-    public TweetModel(long id, String name, String username, String email, String message, String created_at, String profile_image_url, String publicImageUrl, String contentType) {
+    public TweetModel(long id, String name, String username, String email, String message, String created_at, String profile_image_url, String publicImageUrl, String contentType, long timestamps) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -52,6 +55,15 @@ public class TweetModel implements Serializable {
         this.publicImageUrl = publicImageUrl;
         this.profile_image_url = profile_image_url;
         this.contentType = contentType;
+        this.timestamps = timestamps;
+    }
+
+    public long getTimestamps() {
+        return timestamps;
+    }
+
+    public void setTimestamps(long timestamps) {
+        this.timestamps = timestamps;
     }
 
     public String getContentType() {
