@@ -160,6 +160,7 @@ public class FeedScreen extends AppCompatActivity {
             FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, newList);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+            Stash.put("List", newList);
         } else {
             Log.d("List123", "List zero " + list.size());
             positionList = Stash.getArrayList("positionList", Integer.class);
