@@ -101,6 +101,7 @@ public class FeedScreen extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         refresh = findViewById(R.id.refresh);
 
+
         database = RoomDB.getInstance(this);
 
         positionList = Stash.getArrayList("positionList", Integer.class);
@@ -266,14 +267,14 @@ public class FeedScreen extends AppCompatActivity {
                             String text = tweet.text;
                             String s = StringUtils.substringBetween(text, "@", " ");
                             message = tweet.quotedStatus.text;
-                            if (message == null){
+                            if (message == null) {
                                 message = tweet.text;
                             } else {
                                 message = "@" + tweet.quotedStatus.user.screenName + " " +  tweet.quotedStatus.text;
                                 Log.d("Quttoed TExt", "message : " + message);
                             }
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
