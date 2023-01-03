@@ -269,7 +269,7 @@ public class FeedScreen extends AppCompatActivity {
                             if (message == null){
                                 message = tweet.text;
                             } else {
-                                message = tweet.quotedStatus.text;
+                                message = "@" + tweet.quotedStatus.user.screenName + " " +  tweet.quotedStatus.text;
                                 Log.d("Quttoed TExt", "message : " + message);
                             }
                         }
@@ -425,7 +425,7 @@ public class FeedScreen extends AppCompatActivity {
 //        Stash.clear("List");
 //        database.mainDAO().Delete();
         boolean isStarted = Stash.getBoolean("isStarted", false);
-        if (!isStarted){
+        if (!isStarted) {
             refreshTweets();
             Stash.put("isStarted", false);
         }
