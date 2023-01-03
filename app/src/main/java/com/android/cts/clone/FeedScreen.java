@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.util.StringUtil;
 
 import com.android.cts.clone.Adapters.FeedListAdapter;
+import com.android.cts.clone.Model.DeleteTweetModel;
 import com.android.cts.clone.Model.TweetModel;
 import com.android.cts.clone.database.RoomDB;
 import com.fxn.stash.Stash;
@@ -56,6 +57,7 @@ public class FeedScreen extends AppCompatActivity {
     boolean run = true;
     RoomDB database;
     List<TweetModel> list;
+    List<TweetModel> newList2;
     SimpleDateFormat formatter;
     Date sessionTime, dateE, dateS, endTime;
     String s, stashDate, enddate;
@@ -72,11 +74,11 @@ public class FeedScreen extends AppCompatActivity {
     private TwitterSession session;
     SQLiteDatabase db;
     FeedListAdapter feedListAdapter;
-    List<Integer> positionList = new ArrayList<>();
+    List<DeleteTweetModel> positionList = new ArrayList<>();
     boolean isDeleted = false;
     List<TweetModel> newList = new ArrayList<>();
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,23 +152,8 @@ public class FeedScreen extends AppCompatActivity {
         emailTxt.setText(username);
         Log.d("token", "" + id);
 
-        list = database.mainDAO().getAll();
+        fetchData();
 
-        // refreshTweets();
-
-        if (list.size() >= 1 && list != null) {
-            Log.d("List123", "List offline " + list.size());
-            List<TweetModel> newList = new ArrayList<>(new LinkedHashSet<>(list));
-            FeedListAdapter adapter = new FeedListAdapter(FeedScreen.this, newList);
-            recyclerView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            Stash.put("List", newList);
-        } else {
-            Log.d("List123", "List zero " + list.size());
-            positionList = Stash.getArrayList("positionList", Integer.class);
-            isDeleted = Stash.getBoolean("isDeleted", false);
-            refreshTweets();
-        }
         Log.d(TAG, "onCreate: listSize: " + list.size());
         Log.d(TAG, "onCreate: tweetList: " + tweetList.size());
         refresh.setOnClickListener(v -> {
@@ -175,6 +162,25 @@ public class FeedScreen extends AppCompatActivity {
             isDeleted = Stash.getBoolean("isDeleted", false);
             refreshTweets();
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void fetchData() {
+        list = database.mainDAO().getAll();
+        if (list.size() >= 1 && list != null) {
+            Log.d("List123", "List offline " + list.size());
+            newList2 = new ArrayList<>(new LinkedHashSet<>(list));
+            Collections.sort(newList2, Comparator.comparing(TweetModel::getTimestamps));
+            Collections.reverse(newList2);
+            Log.d(TAG, "clear 0: " + newList2.size());
+            feedListAdapter = new FeedListAdapter(FeedScreen.this, newList2);
+            recyclerView.setAdapter(feedListAdapter);
+        } else {
+            Log.d("List123", "List zero " + list.size());
+            positionList = Stash.getArrayList("positionList", Integer.class);
+            isDeleted = Stash.getBoolean("isDeleted", false);
+            refreshTweets();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
@@ -271,6 +277,11 @@ public class FeedScreen extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    boolean dd = Stash.getBoolean(String.valueOf(tweet.id), false);
+
+                    if (dd)
+                        continue;
+
                     TweetModel model = new TweetModel(
                             tweet.id,
                             "@" + tweet.user.screenName,
@@ -324,6 +335,7 @@ public class FeedScreen extends AppCompatActivity {
                     tweetList.addAll(database.mainDAO().getAll());
                     newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
                     Collections.sort(newList, Comparator.comparing(TweetModel::getTimestamps));
+                    Collections.reverse(newList);
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
                     Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", newList);
@@ -374,24 +386,37 @@ public class FeedScreen extends AppCompatActivity {
         });
     }
 
-    private void clear(){
-        positionList = Stash.getArrayList("positionList", Integer.class);
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void clear() {
+        positionList = Stash.getArrayList("positionList", DeleteTweetModel.class);
         isDeleted = Stash.getBoolean("isDeleted", false);
+        fetchData();
+
+        Log.d(TAG, "clear 1: " + newList2.size());
         if (isDeleted) {
             Log.d("ListItemP", "list : Inside");
-            for (int i=0; i<positionList.size(); i++){
+            for (int i=0; i<positionList.size(); i++) {
                 Log.d("ListItemP", "list : " + positionList.get(i));
-                tweetList.remove(positionList.get(i));
+                /*tweetList.remove(positionList.get(i));
                 newList.remove(positionList.get(i));
-                feedListAdapter.notifyItemRemoved(positionList.get(i));
+                Log.d(TAG, "clear 2 : " + newList2.size());
+                newList2.remove(positionList.get(i));
+                Log.d(TAG, "clear 3 : " + newList2.size());
+                *//*database.mainDAO().Delete(tweetList.get(positionList.get(i)).getId());
+                database.mainDAO().Delete(newList.get(positionList.get(i)).getId());*/
+                Log.d(TAG, "clear 3 : " + positionList.get(i) + "  " + i);
+                feedListAdapter.notifyItemRemoved(positionList.get(i).getPosition());
             }
             Stash.clear("positionList");
             Stash.clear("isDeleted");
             Stash.clear("List");
+            Stash.put("List", newList2);
+        } else {
+            feedListAdapter.notifyDataSetChanged();
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onResume() {
         super.onResume();
