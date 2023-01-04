@@ -64,6 +64,7 @@ public class FeedScreen extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ImageButton refresh;
     private TextView emailTxt;
+    Tweet tweet;
     private String username;
     private SharedPreferencesManager sharedPref;
     private final String JSON_URL = "https://api.twitter.com/2/users/%s/tweets";
@@ -192,6 +193,14 @@ public class FeedScreen extends AppCompatActivity {
             Collections.sort(newList2, Comparator.comparing(TweetModel::getTimestamps));
             Collections.reverse(newList2);
             Log.d(TAG, "clear 0: " + newList2.size());
+
+            for (int i = 0; i < newList2.size(); i++){
+                boolean d = Stash.getBoolean(String.valueOf(newList2.get(i).getId()), false);
+                if (d){
+                    newList2.remove(i);
+                }
+            }
+
             feedListAdapter = new FeedListAdapter(FeedScreen.this, newList2);
             recyclerView.setAdapter(feedListAdapter);
             feedListAdapter.notifyDataSetChanged();
@@ -247,7 +256,7 @@ public class FeedScreen extends AppCompatActivity {
             public void success(Result<List<Tweet>> result) {
                 Log.d(TAG, "success: resultListSize: " + result.data.size());
                 for (int i = 0; i < result.data.size(); i++) {
-                    Tweet tweet = result.data.get(i);
+                    tweet = result.data.get(i);
 
                     String date = null;
 
@@ -358,6 +367,14 @@ public class FeedScreen extends AppCompatActivity {
                     newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
                     Collections.sort(newList, Comparator.comparing(TweetModel::getTimestamps));
                     Collections.reverse(newList);
+
+                    for (int i = 0; i < newList.size(); i++){
+                        boolean d = Stash.getBoolean(String.valueOf(newList.get(i).getId()), false);
+                        if (d){
+                            newList.remove(i);
+                        }
+                    }
+
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
                     Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", newList);
@@ -411,13 +428,6 @@ public class FeedScreen extends AppCompatActivity {
             Log.d("ListItemP", "list : Inside");
             for (int i=0; i<positionList.size(); i++) {
                 Log.d("ListItemP", "list : " + positionList.get(i));
-                /*tweetList.remove(positionList.get(i));
-                newList.remove(positionList.get(i));
-                Log.d(TAG, "clear 2 : " + newList2.size());
-                newList2.remove(positionList.get(i));
-                Log.d(TAG, "clear 3 : " + newList2.size());
-                *//*database.mainDAO().Delete(tweetList.get(positionList.get(i)).getId());
-                database.mainDAO().Delete(newList.get(positionList.get(i)).getId());*/
                 Log.d(TAG, "clear 3 : " + positionList.get(i).getPosition() + "  " + i);
                 feedListAdapter.notifyItemRemoved(positionList.get(i).getPosition());
             }
