@@ -300,9 +300,9 @@ public class FeedScreen extends AppCompatActivity {
                     }
 
                     boolean dd = Stash.getBoolean(String.valueOf(tweet.id), false);
-
                     if (dd)
                         continue;
+                    Log.d("isDeleted", dd+" "+tweet.id);
 
                     TweetModel model = new TweetModel(
                             tweet.id,
@@ -361,14 +361,6 @@ public class FeedScreen extends AppCompatActivity {
                     Log.d(TAG, "success: tweetListSize: " + tweetList.size());
                     Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", newList);
-
-                    /*if (newList.size()==0){
-                        feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
-                        recyclerView.setAdapter(feedListAdapter);
-                        feedListAdapter.notifyDataSetChanged();
-                    } else {
-                        feedListAdapter.notifyItemRangeInserted(newList.size() - 1, result.data.size());
-                    }*/
 
                     feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
                     recyclerView.setAdapter(feedListAdapter);
@@ -447,7 +439,7 @@ public class FeedScreen extends AppCompatActivity {
         boolean isStarted = Stash.getBoolean("isStarted", false);
         if (!isStarted) {
             refreshTweets();
-            Stash.put("isStarted", false);
+            Stash.put("isStarted", true);
         }
     }
 

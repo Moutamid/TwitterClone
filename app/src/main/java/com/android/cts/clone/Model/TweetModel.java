@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity(tableName = "tweets")
 public class TweetModel implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     private long id = 0;
 
     @ColumnInfo(name = "Name")
