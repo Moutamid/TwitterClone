@@ -197,6 +197,7 @@ public class FeedScreen extends AppCompatActivity {
             for (int i = 0; i < newList2.size(); i++){
                 boolean d = Stash.getBoolean(String.valueOf(newList2.get(i).getId()), false);
                 if (d){
+                    database.mainDAO().Delete(newList2.get(i).getId());
                     newList2.remove(i);
                 }
             }
@@ -371,6 +372,7 @@ public class FeedScreen extends AppCompatActivity {
                     for (int i = 0; i < newList.size(); i++){
                         boolean d = Stash.getBoolean(String.valueOf(newList.get(i).getId()), false);
                         if (d){
+                            database.mainDAO().Delete(newList.get(i).getId());
                             newList.remove(i);
                         }
                     }
