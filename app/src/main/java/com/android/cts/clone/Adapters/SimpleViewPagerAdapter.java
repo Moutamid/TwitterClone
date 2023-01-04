@@ -167,35 +167,7 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
             //Toast.makeText(getApplicationContext(), "Tweet Deleted Successfully", Toast.LENGTH_SHORT).show();
             /*startActivity(new Intent(DetailsScreen.this, FeedScreen.class));
             finish();*/
-            if (pos < list.size() - 1) {
-                loadTweets(pos + 1);
-                list.remove(pos);
-                Log.d(TAG, "instantiateItem: " + pos);
-                positionList.add(new DeleteTweetModel(list.get(pos).getId(), pos, true));
-                new Handler().postDelayed(() -> {
-                    Stash.put("positionList", positionList);
-                    Stash.put("isDeleted", true);
-
-                    Stash.put(String.valueOf(list.get(pos).getId()), true);
-
-
-                }, 500);
-                Log.d(TAG, "Clear: " + list.get(pos).getId() + "\n" + list.get(pos).getMessage());
-                database.mainDAO().Delete(list.get(pos).getId());
-                notifyDataSetChanged();
-            } else if (pos == list.size()-1){
-                loadTweets(pos - 1);
-                list.remove(pos);
-                positionList.add(new DeleteTweetModel(list.get(pos).getId(), pos, true));
-                Log.d(TAG, "instantiateItem: " + pos);
-                new Handler().postDelayed(() ->{
-                    Stash.put("positionList", positionList);
-                    Stash.put("isDeleted", true);
-                }, 500);
-                Log.d(TAG, "Clear: " + list.get(pos).getId() + "\n" + list.get(pos).getMessage());
-                database.mainDAO().Delete(list.get(pos).getId());
-                notifyDataSetChanged();
-            }
+            delete(pos);
         });
 
         downloadBtn.setOnClickListener(v -> {
@@ -234,6 +206,25 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
         Objects.requireNonNull(container).addView(view, 0);
         return view;
+    }
+
+    private void delete(int pos) {
+        Log.d(TAG, "instantiateItem: " + pos);
+        positionList.add(new DeleteTweetModel(list.get(pos).getId(), pos, true));
+        new Handler().postDelayed(() -> {
+            Stash.put("positionList", positionList);
+            Stash.put("isDeleted", true);
+            Stash.put(String.valueOf(list.get(pos).getId()), true);
+        }, 500);
+        Log.d(TAG, "Clear: " + list.get(pos).getId() + "\n" + list.get(pos).getMessage());
+        database.mainDAO().Delete(list.get(pos).getId());
+        list.remove(pos);
+        notifyDataSetChanged();
+        if (pos < list.size() - 1) {
+            loadTweets(pos + 1);
+        } else if (pos == list.size()-1){
+            loadTweets(pos - 1);
+        }
     }
 
     private void download(int pos) {

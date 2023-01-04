@@ -101,6 +101,7 @@ public class FeedScreen extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         refresh = findViewById(R.id.refresh);
 
+        newList2 = new ArrayList<>();
 
         database = RoomDB.getInstance(this);
 
@@ -155,6 +156,23 @@ public class FeedScreen extends AppCompatActivity {
 
         fetchData();
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                // Some code when initially scrollState changes
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                // Some code while the list is scrolling
+                LinearLayoutManager lManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int rcPos = lManager.findFirstVisibleItemPosition();
+                Stash.put("rcLastPos", rcPos);
+            }
+        });
+
         Log.d(TAG, "onCreate: listSize: " + list.size());
         Log.d(TAG, "onCreate: tweetList: " + tweetList.size());
         refresh.setOnClickListener(v -> {
@@ -176,6 +194,9 @@ public class FeedScreen extends AppCompatActivity {
             Log.d(TAG, "clear 0: " + newList2.size());
             feedListAdapter = new FeedListAdapter(FeedScreen.this, newList2);
             recyclerView.setAdapter(feedListAdapter);
+            feedListAdapter.notifyDataSetChanged();
+            int rc = Stash.getInt("rcLastPos",0);
+            recyclerView.scrollToPosition(rc);
         } else {
             Log.d("List123", "List zero " + list.size());
             positionList = Stash.getArrayList("positionList", Integer.class);
@@ -405,15 +426,13 @@ public class FeedScreen extends AppCompatActivity {
                 Log.d(TAG, "clear 3 : " + newList2.size());
                 *//*database.mainDAO().Delete(tweetList.get(positionList.get(i)).getId());
                 database.mainDAO().Delete(newList.get(positionList.get(i)).getId());*/
-                Log.d(TAG, "clear 3 : " + positionList.get(i) + "  " + i);
+                Log.d(TAG, "clear 3 : " + positionList.get(i).getPosition() + "  " + i);
                 feedListAdapter.notifyItemRemoved(positionList.get(i).getPosition());
             }
             Stash.clear("positionList");
             Stash.clear("isDeleted");
             Stash.clear("List");
             Stash.put("List", newList2);
-        } else {
-            feedListAdapter.notifyDataSetChanged();
         }
     }
 
