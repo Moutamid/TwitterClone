@@ -211,12 +211,14 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
     private void delete(int pos) {
         Log.d(TAG, "instantiateItem: " + pos);
         positionList.add(new DeleteTweetModel(list.get(pos).getId(), pos, true));
-        new Handler().postDelayed(() -> {
+//        new Handler().postDelayed(() -> {
             Stash.put("positionList", positionList);
             Stash.put("isDeleted", true);
             Stash.put(String.valueOf(list.get(pos).getId()), true);
-        }, 500);
-        Log.d(TAG, "Clear: " + list.get(pos).getId() + "\n" + list.get(pos).getMessage());
+            Log.d(TAG, "success12: "+ list.get(pos).getId());
+            Log.d(TAG, "delete: ");
+//        }, 500);
+        Log.d(TAG, "Cleared123: " + list.get(pos).getId() + "\n" + list.get(pos).getMessage());
         database.mainDAO().Delete(list.get(pos).getId());
         list.remove(pos);
         notifyDataSetChanged();

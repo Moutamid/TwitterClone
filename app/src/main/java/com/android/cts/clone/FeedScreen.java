@@ -106,7 +106,8 @@ public class FeedScreen extends AppCompatActivity {
 
         database = RoomDB.getInstance(this);
 
-        positionList = Stash.getArrayList("positionList", Integer.class);
+        positionList = Stash.getArrayList("positionList", DeleteTweetModel.class);
+//        positionList = Stash.getArrayList("positionList", Integer.class);
         isDeleted = Stash.getBoolean("isDeleted", false);
 
         String se = null;
@@ -204,7 +205,8 @@ public class FeedScreen extends AppCompatActivity {
 
             feedListAdapter = new FeedListAdapter(FeedScreen.this, newList2);
             recyclerView.setAdapter(feedListAdapter);
-            feedListAdapter.notifyDataSetChanged();
+            Log.d("TAGER", "fetchData: 207");
+//            feedListAdapter.notifyDataSetChanged();
             int rc = Stash.getInt("rcLastPos",0);
             recyclerView.scrollToPosition(rc);
         } else {
@@ -256,8 +258,18 @@ public class FeedScreen extends AppCompatActivity {
             @Override
             public void success(Result<List<Tweet>> result) {
                 Log.d(TAG, "success: resultListSize: " + result.data.size());
+
+                ArrayList<TweetModel> fetchedList = new ArrayList<>();
+
                 for (int i = 0; i < result.data.size(); i++) {
                     tweet = result.data.get(i);
+
+                    boolean dd = Stash.getBoolean(String.valueOf(tweet.id), false);
+                    if (dd) {
+                        Log.d(TAG, "success12: Deleted: " + tweet.id);
+                        continue;
+                    }else Log.d(TAG, "success12: Normal: " + tweet.id);
+
 
                     String date = null;
 
@@ -309,10 +321,13 @@ public class FeedScreen extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    boolean dd = Stash.getBoolean(String.valueOf(tweet.id), false);
-                    if (dd)
+                    /*boolean ddd = Stash.getBoolean(String.valueOf(tweet.id), false);
+                    if (ddd) {
+                        database.mainDAO().Delete(tweet.id);
+                        newList2.remove(i);
                         continue;
-                    Log.d("isDeleted", dd+" "+tweet.id);
+                    }
+                    Log.d("isDeleted", i + " "+ddd+" "+tweet.id);*/
 
                     TweetModel model = new TweetModel(
                             tweet.id,
@@ -326,6 +341,7 @@ public class FeedScreen extends AppCompatActivity {
                             tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).type : "",
                             dateE.getTime()
                     );
+                    fetchedList.add(model);
                     database.mainDAO().insert(model);
                     Log.d("List123", "Working " + tweetList.size() + "  " + i);
                     // tweetList.add(model);
@@ -381,9 +397,13 @@ public class FeedScreen extends AppCompatActivity {
                     Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", newList);
 
-                    feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);
+                    Collections.sort(fetchedList, Comparator.comparing(TweetModel::getTimestamps));
+                    Collections.reverse(fetchedList);
+
+                    feedListAdapter = new FeedListAdapter(FeedScreen.this, fetchedList);
                     recyclerView.setAdapter(feedListAdapter);
-                    feedListAdapter.notifyDataSetChanged();
+                    Log.d("TAGER", "success: 387");
+//                    feedListAdapter.notifyDataSetChanged();
 
                     /*if (run) {
                         feedListAdapter = new FeedListAdapter(FeedScreen.this, newList);

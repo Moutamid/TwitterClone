@@ -40,6 +40,15 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
     @Override
     public void onBindViewHolder(@NonNull FeedViewHolder holder, @SuppressLint("RecyclerView") int position) {
         TweetModel model = userModelArrayList.get(holder.getAdapterPosition());
+        Log.d(TAG, "onBindViewHolder: position: "+ holder.getAdapterPosition()+" "+ model.getMessage());
+
+        /*boolean dd = Stash.getBoolean(String.valueOf(model.getId()), false);
+        if (dd) {
+            Log.d(TAG, "onBindViewHolder: positionTrue: "+ holder.getAdapterPosition()+" "+ model.getMessage());
+            userModelArrayList.remove(holder.getAdapterPosition());
+            notifyDataSetChanged();
+            return;
+        }*/
 
         holder.nameTxt.setText(model.getName());
         holder.timeTxt.setText(model.getCreated_at());
@@ -48,11 +57,14 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedVi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("success12", "onClick: "+model.getId());
                 Intent intent = new Intent(mContext, ViewPagerActivity.class);
 //                Stash.put("List", userModelArrayList);
                 Stash.put("position", holder.getAdapterPosition());
                 Log.d(TAG, "onClick: userModelArrayList.size(): "+userModelArrayList.size());
                 Log.d(TAG, "onClick: final position: "+position);
+                // 1500425778428846090
+                // 1500425778428846090
                 Log.d(TAG, "onClick: AdapterPosition: "+holder.getAdapterPosition());
                 mContext.startActivity(intent);
                 Log.d("position12", "Feed Adapter : " + holder.getAdapterPosition());
