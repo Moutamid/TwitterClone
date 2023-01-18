@@ -17,7 +17,7 @@ public interface MainDAO {
     @Insert(onConflict = REPLACE)
     void insert(TweetModel tweets);
 
-    @Query("SELECT * FROM tweets ORDER BY created_at ASC")
+    @Query("SELECT * FROM tweets ORDER BY timestamps DESC")
     List<TweetModel> getAll();
 
     @Query("UPDATE tweets SET name = :name, username = :username, email= :email, message= :message, created_at= :created_at, imageUrl= :imageUrl, profile_image_url= :profile_image_url, timestamps= :timestamps  where id = :id")

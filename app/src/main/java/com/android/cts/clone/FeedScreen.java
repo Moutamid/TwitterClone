@@ -191,8 +191,8 @@ public class FeedScreen extends AppCompatActivity {
         if (list.size() >= 1 && list != null) {
             Log.d("List123", "List offline " + list.size());
             newList2 = new ArrayList<>(new LinkedHashSet<>(list));
-            Collections.sort(newList2, Comparator.comparing(TweetModel::getTimestamps));
-            Collections.reverse(newList2);
+//            Collections.sort(newList2, Comparator.comparing(TweetModel::getTimestamps));
+//            Collections.reverse(newList2);
             Log.d(TAG, "clear 0: " + newList2.size());
 
             for (int i = 0; i < newList2.size(); i++){
@@ -382,8 +382,8 @@ public class FeedScreen extends AppCompatActivity {
                     tweetList.clear();
                     tweetList.addAll(database.mainDAO().getAll());
                     newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
-                    Collections.sort(newList, Comparator.comparing(TweetModel::getTimestamps));
-                    Collections.reverse(newList);
+//                    Collections.sort(newList, Comparator.comparing(TweetModel::getTimestamps));
+//                    Collections.reverse(newList);
 
                     for (int i = 0; i < newList.size(); i++){
                         boolean d = Stash.getBoolean(String.valueOf(newList.get(i).getId()), false);
@@ -397,8 +397,12 @@ public class FeedScreen extends AppCompatActivity {
                     Log.d(TAG, "success: newListSize: " + newList.size());
                     Stash.put("List", newList);
 
-                    Collections.sort(fetchedList, Comparator.comparing(TweetModel::getTimestamps));
-                    Collections.reverse(fetchedList);
+                    try{
+                        Collections.sort(fetchedList, Comparator.comparing(TweetModel::getTimestamps));
+                        Collections.reverse(fetchedList);
+                    } catch (Exception e){
+                        Toast.makeText(FeedScreen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
                     feedListAdapter = new FeedListAdapter(FeedScreen.this, fetchedList);
                     recyclerView.setAdapter(feedListAdapter);
