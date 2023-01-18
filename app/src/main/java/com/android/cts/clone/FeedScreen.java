@@ -117,6 +117,8 @@ public class FeedScreen extends AppCompatActivity {
             Log.d("List123", "Stash : " + se);
         } catch (Exception e) {
             e.printStackTrace();
+           // throw new RuntimeException("Test Crash"); // Force a crash
+
         }
 
         formatter = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa");
@@ -183,37 +185,47 @@ public class FeedScreen extends AppCompatActivity {
             isDeleted = Stash.getBoolean("isDeleted", false);
             refreshTweets();
         });
+//        throw new RuntimeException("Test Crash"); // Force a crash
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void fetchData() {
-        list = database.mainDAO().getAll();
-        if (list.size() >= 1 && list != null) {
-            Log.d("List123", "List offline " + list.size());
-            newList2 = new ArrayList<>(new LinkedHashSet<>(list));
+        try {
+            list = database.mainDAO().getAll();
+            if (list.size() >= 1 && list != null) {
+                Log.d("List123", "List offline " + list.size());
+                newList2 = new ArrayList<>(new LinkedHashSet<>(list));
 //            Collections.sort(newList2, Comparator.comparing(TweetModel::getTimestamps));
-//            Collections.reverse(newList2);
-            Log.d(TAG, "clear 0: " + newList2.size());
+            Collections.reverse(newList2);
+                Log.d(TAG, "clear 0: " + newList2.size());
 
-            for (int i = 0; i < newList2.size(); i++){
-                boolean d = Stash.getBoolean(String.valueOf(newList2.get(i).getId()), false);
-                if (d){
-                    database.mainDAO().Delete(newList2.get(i).getId());
-                    newList2.remove(i);
+                for (int i = 0; i < newList2.size(); i++){
+                    boolean d = Stash.getBoolean(String.valueOf(newList2.get(i).getId()), false);
+                    if (d){
+                        database.mainDAO().Delete(newList2.get(i).getId());
+                        newList2.remove(i);
+                    }
                 }
-            }
 
-            feedListAdapter = new FeedListAdapter(FeedScreen.this, newList2);
-            recyclerView.setAdapter(feedListAdapter);
-            Log.d("TAGER", "fetchData: 207");
+                feedListAdapter = new FeedListAdapter(FeedScreen.this, newList2);
+                recyclerView.setAdapter(feedListAdapter);
+                Log.d("TAGER", "fetchData: 207");
 //            feedListAdapter.notifyDataSetChanged();
-            int rc = Stash.getInt("rcLastPos",0);
-            recyclerView.scrollToPosition(rc);
-        } else {
-            Log.d("List123", "List zero " + list.size());
-            positionList = Stash.getArrayList("positionList", Integer.class);
-            isDeleted = Stash.getBoolean("isDeleted", false);
-            refreshTweets();
+                int rc = Stash.getInt("rcLastPos",0);
+                recyclerView.scrollToPosition(rc);
+
+             //   throw new RuntimeException("Test Crash"); // Force a crash
+            } else {
+                Log.d("List123", "List zero " + list.size());
+                positionList = Stash.getArrayList("positionList", Integer.class);
+                isDeleted = Stash.getBoolean("isDeleted", false);
+                refreshTweets();
+
+              //  throw new RuntimeException("Test Crash"); // Force a crash
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+//            throw new RuntimeException("Test Crash"); // Force a crash
         }
     }
 
@@ -240,6 +252,7 @@ public class FeedScreen extends AppCompatActivity {
             endTime = formatter.parse(enddate);
         } catch (ParseException e) {
             e.printStackTrace();
+         //   throw new RuntimeException("Test Crash"); // Force a crash
         }
 
         //Toast.makeText(this, "stash : " + stashDate, Toast.LENGTH_SHORT).show();
@@ -278,12 +291,16 @@ public class FeedScreen extends AppCompatActivity {
                                 .format(new SimpleDateFormat("E MMM dd hh:mm:ss Z yyyy").parse(tweet.createdAt));
                     } catch (ParseException e) {
                         e.printStackTrace();
+                       // throw new RuntimeException("Test Crash"); // Force a crash
+
                     }
 
                     try {
                         dateE = new SimpleDateFormat("E, MMM dd yyyy, hh:mm aa", Locale.getDefault()).parse(date);
                     } catch (ParseException e) {
                         e.printStackTrace();
+                       // throw new RuntimeException("Test Crash"); // Force a crash
+
                     }
 
                     /*Log.d("List123", "dateE : " + dateE);
@@ -319,6 +336,8 @@ public class FeedScreen extends AppCompatActivity {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+
+//                        throw new RuntimeException("Test Crash"); // Force a crash
                     }
 
                     /*boolean ddd = Stash.getBoolean(String.valueOf(tweet.id), false);
@@ -378,35 +397,39 @@ public class FeedScreen extends AppCompatActivity {
                 }
 
                 Stash.clear("List");
-                new Handler().postDelayed(() -> {
-                    tweetList.clear();
-                    tweetList.addAll(database.mainDAO().getAll());
-                    newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
+                try {
+                    new Handler().postDelayed(() -> {
+                        tweetList.clear();
+                        tweetList.addAll(database.mainDAO().getAll());
+                        newList = new ArrayList<>(new LinkedHashSet<>(tweetList));
 //                    Collections.sort(newList, Comparator.comparing(TweetModel::getTimestamps));
-//                    Collections.reverse(newList);
+                    Collections.reverse(newList);
 
-                    for (int i = 0; i < newList.size(); i++){
-                        boolean d = Stash.getBoolean(String.valueOf(newList.get(i).getId()), false);
-                        if (d){
-                            database.mainDAO().Delete(newList.get(i).getId());
-                            newList.remove(i);
+                        for (int i = 0; i < newList.size(); i++){
+                            boolean d = Stash.getBoolean(String.valueOf(newList.get(i).getId()), false);
+                            if (d) {
+                                database.mainDAO().Delete(newList.get(i).getId());
+                                newList.remove(i);
+                            }
                         }
-                    }
 
-                    Log.d(TAG, "success: tweetListSize: " + tweetList.size());
-                    Log.d(TAG, "success: newListSize: " + newList.size());
-                    Stash.put("List", newList);
+                        Log.d(TAG, "success: tweetListSize: " + tweetList.size());
+                        Log.d(TAG, "success: newListSize: " + newList.size());
+                        Stash.put("List", newList);
 
-                    try{
-                        Collections.sort(fetchedList, Comparator.comparing(TweetModel::getTimestamps));
-                        Collections.reverse(fetchedList);
-                    } catch (Exception e){
-                        Toast.makeText(FeedScreen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                        try{
+                            Collections.sort(fetchedList, Comparator.comparing(TweetModel::getTimestamps));
+                            Collections.reverse(fetchedList);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                            //throw new RuntimeException("Test Crash"); // Force a crash
+                            //Toast.makeText(FeedScreen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
 
-                    feedListAdapter = new FeedListAdapter(FeedScreen.this, fetchedList);
-                    recyclerView.setAdapter(feedListAdapter);
-                    Log.d("TAGER", "success: 387");
+                        feedListAdapter = new FeedListAdapter(FeedScreen.this, fetchedList);
+                        recyclerView.setAdapter(feedListAdapter);
+                        Log.d("TAGER", "success: 387");
+//                        throw new RuntimeException("Test Crash"); // Force a crash
 //                    feedListAdapter.notifyDataSetChanged();
 
                     /*if (run) {
@@ -427,7 +450,12 @@ public class FeedScreen extends AppCompatActivity {
 //                        Stash.clear("positionList");
 //                        Stash.clear("isDeleted");
 //                    }
-                }, 500);
+                    }, 500);
+                } catch (Exception e){
+                    e.printStackTrace();
+
+                   // throw new RuntimeException("Test Crash"); // Force a crash
+                }
 
 //                Collections.reverse(tweetList);
 
