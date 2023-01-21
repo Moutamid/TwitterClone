@@ -418,7 +418,7 @@ public class FeedScreen extends AppCompatActivity {
                         Stash.put("List", newList);
 
                         try{
-                            Collections.sort(fetchedList, Comparator.comparing(TweetModel::getTimestamps));
+                            //Collections.sort(fetchedList, Comparator.comparing(TweetModel::getTimestamps));
                             Collections.reverse(fetchedList);
                         } catch (Exception e){
                             e.printStackTrace();

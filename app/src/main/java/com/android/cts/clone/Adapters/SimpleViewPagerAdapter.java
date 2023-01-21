@@ -245,7 +245,9 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
                 .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                     @Override
                     public void onStartOrResume() {
-                        progressDialog.show();
+                        if (!((Activity)ctx).isFinishing()){
+                            progressDialog.show();
+                        }
                     }
                 })
                 .setOnPauseListener(new OnPauseListener() {
