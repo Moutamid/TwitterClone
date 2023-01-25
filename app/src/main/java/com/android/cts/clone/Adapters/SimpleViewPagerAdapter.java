@@ -233,13 +233,18 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
 
         SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmssSS");
         Date myDate = new Date();
-
-        Toast.makeText(ctx, list.get(pos).getContentType(), Toast.LENGTH_SHORT).show();
-        if (list.get(pos).getContentType().equals("video")) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        }
+        int last = list.get(pos).getPublicImageUrl().lastIndexOf(".");
+        String type = list.get(pos).getPublicImageUrl().substring(last);
+        //Toast.makeText(ctx, type, Toast.LENGTH_SHORT).show();
+        fileName = timeStampFormat.format(myDate) + "i" + type;
+        /*if (list.get(pos).getContentType().equals("video")) {
             fileName = timeStampFormat.format(myDate) + "i.mp4";
         } else {
             fileName = timeStampFormat.format(myDate) + "i.jpg";
-        }
+        }*/
         PRDownloader.download(list.get(pos).getPublicImageUrl(), file.getPath(), fileName)
                 .build()
                 .setOnStartOrResumeListener(new OnStartOrResumeListener() {
@@ -344,9 +349,6 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         Log.d("position12", "ViewPager load : " + i);
 
         //Folder Creating Into Phone Storage
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-            file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        }
 
         position = i;
         name.setText(model.getName());
