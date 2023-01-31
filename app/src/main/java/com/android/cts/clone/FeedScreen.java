@@ -429,6 +429,8 @@ public class FeedScreen extends AppCompatActivity {
                         feedListAdapter = new FeedListAdapter(FeedScreen.this, fetchedList);
                         recyclerView.setAdapter(feedListAdapter);
                         Log.d("TAGER", "success: 387");
+                        int rc = Stash.getInt("rcLastPos",0);
+                        recyclerView.scrollToPosition(rc);
 //                        throw new RuntimeException("Test Crash"); // Force a crash
 //                    feedListAdapter.notifyDataSetChanged();
 
@@ -497,6 +499,8 @@ public class FeedScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // tweetList.clear();
+        int rc = Stash.getInt("rcLastPos",0);
+        recyclerView.scrollToPosition(rc);
         clear();
 //        Stash.clear("List");
 //        database.mainDAO().Delete();
