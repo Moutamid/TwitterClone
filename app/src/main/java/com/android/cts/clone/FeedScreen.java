@@ -32,6 +32,7 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.models.VideoInfo;
 import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 
 import org.apache.commons.lang3.StringUtils;
@@ -185,8 +186,6 @@ public class FeedScreen extends AppCompatActivity {
             positionList = Stash.getArrayList("positionList", Integer.class);
             isDeleted = Stash.getBoolean("isDeleted", false);
             refreshTweets();
-            int rc = Stash.getInt("rcLastPos",0);
-            recyclerView.scrollToPosition(rc);
         });
 //        throw new RuntimeException("Test Crash"); // Force a crash
     }
@@ -350,7 +349,7 @@ public class FeedScreen extends AppCompatActivity {
                         continue;
                     }
                     Log.d("isDeleted", i + " "+ddd+" "+tweet.id);*/
-                    TweetModel model;
+                    TweetModel model = new TweetModel();
                     if (tweet.extendedEntities.media.size() > 0) {
                         if (tweet.extendedEntities.media.get(0).type.equals("photo")) {
                             model = new TweetModel (
@@ -368,21 +367,27 @@ public class FeedScreen extends AppCompatActivity {
                             fetchedList.add(model);
                             database.mainDAO().insert(model);
                         } else if (tweet.extendedEntities.media.get(0).type.equals("video")) {
-                            model = new TweetModel(
-                                    tweet.id,
-                                    "@" + tweet.user.screenName,
-                                    tweet.user.name,
-                                    tweet.user.email,
-                                    message,
-                                    date,
-                                    tweet.user.profileImageUrl,
-                                    tweet.extendedEntities.media.get(0).videoInfo.variants.get(0).url,
-                                    tweet.extendedEntities.media.get(0).type,
-                                    dateE.getTime()
-                            );
+                            for (int j =0; j<tweet.extendedEntities.media.get(0).videoInfo.variants.size(); j++) {
+                                if (tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).url.contains(".mp4?tag")){
+                                    if (tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).url.contains("480x")){
+                                        model = new TweetModel(
+                                                tweet.id,
+                                                "@" + tweet.user.screenName,
+                                                tweet.user.name,
+                                                tweet.user.email,
+                                                message,
+                                                date,
+                                                tweet.user.profileImageUrl,
+                                                tweet.extendedEntities.media.get(0).videoInfo.variants.get(j).url,
+                                                tweet.extendedEntities.media.get(0).type,
+                                                dateE.getTime()
+                                        );
+                                    }
+                                }
+                            }
                             fetchedList.add(model);
                             database.mainDAO().insert(model);
-                            //Toast.makeText(FeedScreen.this, "@" + tweet.user.screenName + "\n\n" +tweet.extendedEntities.media.get(0).videoInfo.variants.get(0).url, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(FeedScreen.this, "@" + tweet.user.screenName + "\n\n" +tweet.extendedEntities.media.get(0).videoInfo.aspectRatio, Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         model = new TweetModel(

@@ -238,7 +238,17 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         }
         int last = list.get(pos).getPublicImageUrl().lastIndexOf(".");
         String type = list.get(pos).getPublicImageUrl().substring(last);
-
+        String url = list.get(pos).getPublicImageUrl();
+//        Toast.makeText(ctx, type, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ctx, list.get(pos).getPublicImageUrl(), Toast.LENGTH_SHORT).show();
+//        if (!type.contains(".mp4")){
+//            url = url.replace(type, ".mp4");
+//            url = url.replace("/pl/", "/vid/480x1066/");
+//        } else {
+//            String[] t = type.split("tag");
+//            String ty = t[0].replace("?", "");
+//            url = url.replace(type, ty);
+//        }
         if (list.get(pos).getContentType().equals("video")) {
             String[] t = type.split("tag");
             String ty = t[0].replace("?", "");
@@ -246,7 +256,9 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         } else {
             fileName = timeStampFormat.format(myDate) + "i" + type;
         }
-        PRDownloader.download(list.get(pos).getPublicImageUrl(), file.getPath(), fileName)
+//        Toast.makeText(ctx, url, Toast.LENGTH_SHORT).show();
+
+        PRDownloader.download(url, file.getPath(), fileName)
                 .build()
                 .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                     @Override
