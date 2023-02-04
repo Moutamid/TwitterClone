@@ -186,6 +186,8 @@ public class FeedScreen extends AppCompatActivity {
             positionList = Stash.getArrayList("positionList", Integer.class);
             isDeleted = Stash.getBoolean("isDeleted", false);
             refreshTweets();
+            int rc = Stash.getInt("rcLastPos",0);
+            recyclerView.scrollToPosition(rc);
         });
 //        throw new RuntimeException("Test Crash"); // Force a crash
     }
