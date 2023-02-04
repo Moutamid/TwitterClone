@@ -88,6 +88,7 @@ public class FeedScreen extends AppCompatActivity {
         Log.d(TAG, "onCreate: started");
         Twitter.initialize(this);
         setContentView(R.layout.activity_feed_screen);
+        Constants.checkApp(this);
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))//enable logging when app is in debug mode
                 .twitterAuthConfig(new TwitterAuthConfig(getResources()
@@ -184,6 +185,8 @@ public class FeedScreen extends AppCompatActivity {
             positionList = Stash.getArrayList("positionList", Integer.class);
             isDeleted = Stash.getBoolean("isDeleted", false);
             refreshTweets();
+            int rc = Stash.getInt("rcLastPos",0);
+            recyclerView.scrollToPosition(rc);
         });
 //        throw new RuntimeException("Test Crash"); // Force a crash
     }
