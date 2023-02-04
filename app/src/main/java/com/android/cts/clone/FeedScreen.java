@@ -347,21 +347,56 @@ public class FeedScreen extends AppCompatActivity {
                         continue;
                     }
                     Log.d("isDeleted", i + " "+ddd+" "+tweet.id);*/
-
-                    TweetModel model = new TweetModel(
-                            tweet.id,
-                            "@" + tweet.user.screenName,
-                            tweet.user.name,
-                            tweet.user.email,
-                            message,
-                            date,
-                            tweet.user.profileImageUrl,
-                            tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).mediaUrlHttps : "",
-                            tweet.extendedEntities.media.size() > 0 ? tweet.extendedEntities.media.get(0).type : "",
-                            dateE.getTime()
-                    );
-                    fetchedList.add(model);
-                    database.mainDAO().insert(model);
+                    TweetModel model;
+                    if (tweet.extendedEntities.media.size() > 0) {
+                        if (tweet.extendedEntities.media.get(0).type.equals("photo")) {
+                            model = new TweetModel (
+                                    tweet.id,
+                                    "@" + tweet.user.screenName,
+                                    tweet.user.name,
+                                    tweet.user.email,
+                                    message,
+                                    date,
+                                    tweet.user.profileImageUrl,
+                                    tweet.extendedEntities.media.get(0).mediaUrlHttps,
+                                    tweet.extendedEntities.media.get(0).type ,
+                                    dateE.getTime()
+                            );
+                            fetchedList.add(model);
+                            database.mainDAO().insert(model);
+                        } else if (tweet.extendedEntities.media.get(0).type.equals("video")) {
+                            model = new TweetModel(
+                                    tweet.id,
+                                    "@" + tweet.user.screenName,
+                                    tweet.user.name,
+                                    tweet.user.email,
+                                    message,
+                                    date,
+                                    tweet.user.profileImageUrl,
+                                    tweet.extendedEntities.media.get(0).videoInfo.variants.get(0).url,
+                                    tweet.extendedEntities.media.get(0).type,
+                                    dateE.getTime()
+                            );
+                            fetchedList.add(model);
+                            database.mainDAO().insert(model);
+                            //Toast.makeText(FeedScreen.this, "@" + tweet.user.screenName + "\n\n" +tweet.extendedEntities.media.get(0).videoInfo.variants.get(0).url, Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        model = new TweetModel(
+                                tweet.id,
+                                "@" + tweet.user.screenName,
+                                tweet.user.name,
+                                tweet.user.email,
+                                message,
+                                date,
+                                tweet.user.profileImageUrl,
+                                "",
+                                "",
+                                dateE.getTime()
+                        );
+                        fetchedList.add(model);
+                        database.mainDAO().insert(model);
+                    }
                     Log.d("List123", "Working " + tweetList.size() + "  " + i);
                     // tweetList.add(model);
 

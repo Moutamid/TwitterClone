@@ -238,13 +238,14 @@ public class SimpleViewPagerAdapter extends PagerAdapter implements LoopingPager
         }
         int last = list.get(pos).getPublicImageUrl().lastIndexOf(".");
         String type = list.get(pos).getPublicImageUrl().substring(last);
-        //Toast.makeText(ctx, type, Toast.LENGTH_SHORT).show();
-        fileName = timeStampFormat.format(myDate) + "i" + type;
-        /*if (list.get(pos).getContentType().equals("video")) {
-            fileName = timeStampFormat.format(myDate) + "i.mp4";
+
+        if (list.get(pos).getContentType().equals("video")) {
+            String[] t = type.split("tag");
+            String ty = t[0].replace("?", "");
+            fileName = timeStampFormat.format(myDate) + "i" + ty;
         } else {
-            fileName = timeStampFormat.format(myDate) + "i.jpg";
-        }*/
+            fileName = timeStampFormat.format(myDate) + "i" + type;
+        }
         PRDownloader.download(list.get(pos).getPublicImageUrl(), file.getPath(), fileName)
                 .build()
                 .setOnStartOrResumeListener(new OnStartOrResumeListener() {
