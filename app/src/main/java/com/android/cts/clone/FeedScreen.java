@@ -174,8 +174,10 @@ public class FeedScreen extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
                 // Some code while the list is scrolling
                 LinearLayoutManager lManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                int rcPos = lManager.findFirstVisibleItemPosition();
-                Stash.put("rcLastPos", rcPos);
+                if (lManager!=null){
+                    int rcPos = lManager.findFirstVisibleItemPosition();
+                    Stash.put("rcLastPos", rcPos);
+                }
             }
         });
 
@@ -351,7 +353,7 @@ public class FeedScreen extends AppCompatActivity {
                         continue;
                     }
                     Log.d("isDeleted", i + " "+ddd+" "+tweet.id);*/
-                    TweetModel model = new TweetModel();
+                    TweetModel model;
                     if (tweet.extendedEntities.media.size() > 0) {
                         if (tweet.extendedEntities.media.get(0).type.equals("photo")) {
                             model = new TweetModel (
@@ -384,12 +386,12 @@ public class FeedScreen extends AppCompatActivity {
                                                 tweet.extendedEntities.media.get(0).type,
                                                 dateE.getTime()
                                         );
+                                        fetchedList.add(model);
+                                        database.mainDAO().insert(model);
                                     }
                                 }
                             }
-                            fetchedList.add(model);
-                            database.mainDAO().insert(model);
-                            //Toast.makeText(FeedScreen.this, "@" + tweet.user.screenName + "\n\n" +tweet.extendedEntities.media.get(0).videoInfo.aspectRatio, Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(FeedScreen.this, "@" + tweet.user.screenName + "\n\n" + message, Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         model = new TweetModel(
