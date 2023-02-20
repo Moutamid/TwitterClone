@@ -177,6 +177,8 @@ public class FeedScreen extends AppCompatActivity {
                 if (lManager!=null){
                     int rcPos = lManager.findFirstVisibleItemPosition();
                     Stash.put("rcLastPos", rcPos);
+                    Log.d("TAGGY", "onScrolled: "+rcPos);
+
                 }
             }
         });
@@ -188,8 +190,8 @@ public class FeedScreen extends AppCompatActivity {
             positionList = Stash.getArrayList("positionList", Integer.class);
             isDeleted = Stash.getBoolean("isDeleted", false);
             refreshTweets();
-            int rc = Stash.getInt("rcLastPos",0);
-            recyclerView.scrollToPosition(rc);
+//            int rc = Stash.getInt("rcLastPos",0);
+//            recyclerView.scrollToPosition(rc);
         });
 //        throw new RuntimeException("Test Crash"); // Force a crash
     }
@@ -219,6 +221,8 @@ public class FeedScreen extends AppCompatActivity {
 //            feedListAdapter.notifyDataSetChanged();
                 int rc = Stash.getInt("rcLastPos",0);
                 recyclerView.scrollToPosition(rc);
+                Log.d("TAGGY", "success: scrollingTo newList: "+rc);
+                Log.d("TAGGY", "success: newListSize: "+newList2.size());
 
              //   throw new RuntimeException("Test Crash"); // Force a crash
             } else {
@@ -478,6 +482,10 @@ public class FeedScreen extends AppCompatActivity {
                         Log.d("TAGER", "success: 387");
                         int rc = Stash.getInt("rcLastPos",0);
                         recyclerView.scrollToPosition(rc);
+
+                        Log.d("TAGGY", "success: scrollingTo: "+rc);
+                        Log.d("TAGGY", "success: fetchedListSize: "+fetchedList.size());
+
 //                        throw new RuntimeException("Test Crash"); // Force a crash
 //                    feedListAdapter.notifyDataSetChanged();
 
@@ -546,8 +554,8 @@ public class FeedScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // tweetList.clear();
-        int rc = Stash.getInt("rcLastPos",0);
-        recyclerView.scrollToPosition(rc);
+        /* TODO: commented int rc = Stash.getInt("rcLastPos",0);
+        recyclerView.scrollToPosition(rc);*/
         clear();
 //        Stash.clear("List");
 //        database.mainDAO().Delete();
